@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>lambda表达式（一）——函数式接口</title>
+    <url>/20190201/lambda1/c673d3a38bb1.html</url>
+    <content><![CDATA[<h2 id="1-什么是lambda"><a href="#1-什么是lambda" class="headerlink" title="1.什么是lambda?"></a>1.什么是lambda?</h2><p>如果我们想要起一个线程来打印一串字符串，我们之前的写法通常是这样：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">ExecutorService executorService = Executors.newFixedThreadPool(<span class="number">3</span>);</span><br><span class="line">executorService.execute(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;hello world!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line">executorService.shutdown();</span><br></pre></td></tr></table></figure>
+<p>使用lambda表达式后，可以改写为这个样：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">ExecutorService executorService = Executors.newFixedThreadPool(<span class="number">3</span>);</span><br><span class="line">executorService.execute(() -&gt; System.out.println(<span class="string">&quot;hello world!&quot;</span>));</span><br><span class="line">executorService.shutdown();</span><br></pre></td></tr></table></figure>
+<p>我们可以看到使用lambda表达式后，代码变得更加简洁，这里的 “<code>() -&gt; System.out.println(&quot;hello word!&quot;)</code>“ 其实就相当于Runnable接口的匿名实现，你会发现Runnable的抽象方法<code>run()</code>的签名与<code>() -&gt; System.out.println(&quot;hello word!&quot;)</code>的签名是一致的（lambda表达式的签名下面会讲到）。简而言之，可以把Lambda表达式理解为<strong>简洁地表示可传递的匿名函数的一种方式，它没有名称，但它有参数列表、函数主体、返回类型，可能还有一个可以抛出的异常列表。</strong></p>
+<p>lambda表达式由三部分构成：<strong>参数列表</strong>、**-&gt;(分割符)<strong>、</strong>主体**，基本语法如下：<br><code>(parameters) -&gt; expression</code> 或者 <code>(parameters) -&gt; &#123; statements; &#125;</code></p>
+<ul>
+<li>参数列表：多个参数用逗号隔开，类型可以省略不写，要保证与函数式接口抽象方法的参数列表一致，如果只有一个参数”()”可以省略；</li>
+<li>箭头（-&gt;）: 用于分割参数列表和主体；</li>
+<li>主体：可以直接是表达式，有多条语句要用花括号括起来，如果lambda需要返回一个值，那么返回值即使expression本身所表示的值，如有使用的“{}”，需要用return关键字返回具体值。  </li>
+</ul>
+<p>Lambda的类型是从使用Lambda的上下文推断出来的，上下文中Lambda表达式所需要代表的类型称为<strong>目标类型</strong>，如上示例中 “<code>() -&gt; System.out.println(&quot;hello world!&quot;)</code>” 代表的是Runnable类型的实例，所以相同的lambda表达式在不同的上下文中可能代表不同类型的函数式接口</p>
+<h2 id="2-函数式接口"><a href="#2-函数式接口" class="headerlink" title="2.函数式接口"></a>2.函数式接口</h2><p>假设上面的示例中，如果Runnable接口有两个抽象方法run()和run2()，那么lambda表达式该怎么表示呢，相当于重写了哪个方法呢？这种情况是不能使用lambda表达式的，只有在使用了函数式接口的地方才能使用lambda表达式，所以这里要说一下函数是接口的定义。所谓函数式接口，即：<strong>只有一个抽象方法的接口</strong>。 Java8已经为我们提供了一些常用的函数式接口，如下表：</p>
+<table>
+<thead>
+<tr>
+<th>函数式接口</th>
+<th>函数描述符</th>
+<th>原始类型特化</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Predicate&lt;T&gt;</td>
+<td>T-&gt;boolean</td>
+<td>IntPredicate,<br/>LongPredicate,<br/>DoublePredicate</td>
+</tr>
+<tr>
+<td>Consumer</td>
+<td>T-&gt;void</td>
+<td>IntConsumer,<br/>LongConsumer,<br/>DoubleConsumer</td>
+</tr>
+<tr>
+<td>Function&lt;T,R&gt;</td>
+<td>T-&gt;R</td>
+<td>IntFunction,<br/>IntToDoubleFunction,<br/>IntToLongFunction,<br/>LongFunction,<br/>LongToDoubleFunction,<br/>LongToIntFunction,<br/>DoubleFunction,<br/>ToIntFunction,<br/>ToDoubleFunction,<br/>ToLongFunction</td>
+</tr>
+<tr>
+<td>Supplier</td>
+<td>()-&gt;T</td>
+<td>BooleanSupplier,<br/>IntSupplier,<br/>LongSupplier,<br/>DoubleSupplier</td>
+</tr>
+<tr>
+<td>UnaryOperator</td>
+<td>T-&gt;T</td>
+<td>IntUnaryOperator,<br/>LongUnaryOperator,<br/>DoubleUnaryOperator</td>
+</tr>
+<tr>
+<td>BinaryOperator</td>
+<td>(T,T)-&gt;T</td>
+<td>IntBinaryOperator,<br/>LongBinaryOperator,<br/>DoubleBinaryOperator</td>
+</tr>
+<tr>
+<td>BiPredicate&lt;L,R&gt;</td>
+<td>(L,R)-&gt;boolean</td>
+<td></td>
+</tr>
+<tr>
+<td>BiConsumer&lt;T,U&gt;</td>
+<td>(T,U)-&gt;void</td>
+<td>ObjIntConsumer,<br/>ObjLongConsumer,<br/>ObjDoubleConsumer</td>
+</tr>
+<tr>
+<td>BiFunction&lt;T,U,R&gt;</td>
+<td>(T,U)-&gt;R</td>
+<td>ToIntBiFunction&lt;T,U&gt;,<br/>ToLongBiFunction&lt;T,U&gt;,<br/>ToDoubleBiFunction&lt;T,U&gt;</td>
+</tr>
+</tbody></table>
+<p> 函数式接口的抽象方法的签名基本上就是Lambda表达式的签名，我们将这种抽象方法叫作<strong>函数描述符</strong>，比如 “<code>T-&gt;boolean</code>“ 表示传入一个T类型的参数并返回boolean类型的值。</p>
+<p> <strong>原始类型特化</strong>是在某个函数是接口上，把输入或输出参数特化为原始类型，这样就避免了拆装箱操作，以提高性能。例如 <code>IntPredicate</code> 把输入参数特化为<code>int</code>类型，ToLongFunction把返回值特化为<code>long</code>类型。</p>
+<blockquote>
+<p>查看上表函数式接口的源码，会发现它们都有一个 <code>@FunctionalInterface</code> 注解，这是Java8提供的用来表示接口是否为函数式接口，但它不是必须的，只要接口只包含一个抽象方法就是函数式接口，只是如果接口上加上了<code>@FunctionalInterface</code>注解，那么往接口中添加其他抽象方法时编译就会报错，起到一个限定作用；  </p>
+</blockquote>
+<blockquote>
+<p>特殊的void兼容规则<br>   如果一个Lambda的主体是一个语句表达式(expression)，它就和一个返回void的函数描述符兼容（当然需要参数列表一致）。例如，以下两行都是合法的，尽管List的add方法返回了一个boolean，而不是Consumer上下文（T -&gt; void）所要求的void：<br>   // Predicate返回了一个boolean<br>   Predicate<String> p = s -&gt; list.add(s);<br>   // Consumer返回了一个void<br>   Consumer<String> b = s -&gt; list.add(s);  </p>
+</blockquote>
+<h2 id="3-lambda使用局部变量的限制"><a href="#3-lambda使用局部变量的限制" class="headerlink" title="3.lambda使用局部变量的限制"></a>3.lambda使用局部变量的限制</h2><p>lambda可以没有限制的在主体中引用实例变量和静态变量，但是引用的局部变量必须声明为<code>final</code>或者事实上是<code>final</code>。因为成员变量存储在堆中，而局部变量保存在栈上。如果Lambda可以直接访问局部变量，而且Lambda是在另一个线程中使用的，则使用Lambda的线程时，可能会在分配该局部变量的线程将这个变量收回之后去访问该变量。因此，Java在访问局部变量时，实际上是在访问它的副本，而不是访问原始变量，如果局部变量仅仅赋值一次,那么副本和原始变量就没有什么区别了——因此就有了这个限制，要保证副本和原始值保持一致。<br>例如下面的代码，如果把 “//name = “jack”;” 注释去掉，就会报错</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">ExecutorService executorService = Executors.newFixedThreadPool(<span class="number">3</span>);</span><br><span class="line">String name = <span class="string">&quot;tome&quot;</span>;</span><br><span class="line">executorService.execute(() -&gt; System.out.println(<span class="string">&quot;hello &quot;</span> + name));</span><br><span class="line"><span class="comment">//name = &quot;jack&quot;;</span></span><br><span class="line">executorService.shutdown();</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>lambda</category>
+      </categories>
+      <tags>
+        <tag>java</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>lambda表达式（二）——方法引用</title>
+    <url>/20190202/lambda2/076a298db052.html</url>
+    <content><![CDATA[<p>当我们在使用lambda去表示某个函数式接口的实例时，需要在lambda表达式的主体里去编写函数式接口抽象方法的实现，如果在现有的类中已经存在与抽象方法类似的方法了，我们希望直接引用现有的方法，而不用再去重新写实现了。方法引用让你可以重复使用现有的方法定义，并像Lambda一样传递它们。</p>
+<p>方法引用和lambda表达式拥有相同的特性，它们都需要代表一个<strong>目标类型</strong>，并需要被转化为函数式接口的实例，不过我们并不需要为方法引用提供方法体，我们可以直接通过方法名称引用已有方法方。<strong>法引用要使用到操作符 “::”，左边是类名或者对象名，右边是方法名或者关键字<code>new</code></strong></p>
+<p>首先被引用方法的返回值类型要和函数式接口抽象方法的返回值类型一致，至于参数列表要根据每种引用方式而定。</p>
+<h1 id="1-静态方法引用"><a href="#1-静态方法引用" class="headerlink" title="1. 静态方法引用"></a>1. 静态方法引用</h1><p>语法：<code>ClassName::staticMethodName</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Function&lt;String, Long&gt; f = x -&gt; Long.valueOf(x);</span><br><span class="line">Long result = f.apply(<span class="string">&quot;10&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p>​    等价于：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Function&lt;String, Long&gt; f = Long::valueOf;</span><br><span class="line">Long result = f.apply(<span class="string">&quot;10&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p><strong>静态方法引用时，静态方法要与函数式接口抽象方法参数列表一致</strong></p>
+<h1 id="2-对象方法引用"><a href="#2-对象方法引用" class="headerlink" title="2. 对象方法引用"></a>2. 对象方法引用</h1><p>语法：<code>ClassName::methodName</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">BiPredicate&lt;String, String&gt; bpredicate = (x,y) -&gt; x.equals(y);</span><br><span class="line"><span class="keyword">boolean</span> result = bpredicate.test(<span class="string">&quot;abc&quot;</span>, <span class="string">&quot;abcd&quot;</span>);</span><br><span class="line"></span><br><span class="line">ToIntFunction&lt;String&gt; f = (s) -&gt; s.length();</span><br><span class="line"><span class="keyword">int</span> result2 = f.applyAsInt(<span class="string">&quot;hello&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>​    等价于：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">BiPredicate&lt;String, String&gt; bpredicate = String::equals;</span><br><span class="line"><span class="keyword">boolean</span> result = bpredicate.test(<span class="string">&quot;abc&quot;</span>, <span class="string">&quot;abcd&quot;</span>);</span><br><span class="line"></span><br><span class="line">ToIntFunction&lt;String&gt; f = String::length;</span><br><span class="line"><span class="keyword">int</span> result2 = f.applyAsInt(<span class="string">&quot;hello&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p><strong>对象方法引用时，函数式接口抽象方法的第一个参数是被引用方法的调用者，第二个参数(或者无参)是被引用方法的参数</strong></p>
+<h1 id="3-外部对象方法引用"><a href="#3-外部对象方法引用" class="headerlink" title="3. 外部对象方法引用"></a>3. 外部对象方法引用</h1><p>语法：<code>objectName::methodName</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">List&lt;String&gt; list = Arrays.asList(<span class="string">&quot;hello&quot;</span>, <span class="string">&quot;world&quot;</span>, <span class="string">&quot;aaa&quot;</span>); </span><br><span class="line">Predicate&lt;String&gt; p = (s) -&gt; list.contains(s);</span><br><span class="line"><span class="keyword">boolean</span> result = p.test(<span class="string">&quot;aaa&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>​    等价于：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">List&lt;String&gt; list = Arrays.asList(<span class="string">&quot;hello&quot;</span>, <span class="string">&quot;world&quot;</span>, <span class="string">&quot;aaa&quot;</span>);</span><br><span class="line">Predicate&lt;String&gt; p = list::contains; </span><br><span class="line"><span class="keyword">boolean</span> result = p.test(<span class="string">&quot;aaa&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p><strong>外部对象方法引用时，被引用方法与函数式接口抽象方法参数列表一致</strong></p>
+<h1 id="4-构造器引用"><a href="#4-构造器引用" class="headerlink" title="4. 构造器引用"></a>4. 构造器引用</h1><p>语法：<code>ClassName::new</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Function&lt;Long, Date&gt; fun = (millisecond) -&gt; <span class="keyword">new</span> Date(millisecond);</span><br><span class="line">Date date = fun.apply(<span class="number">1000000000000L</span>);</span><br></pre></td></tr></table></figure>
+
+<p>​    等价于：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Function&lt;Long, Date&gt; fun = Date::<span class="keyword">new</span>;</span><br><span class="line">Date date = fun.apply(<span class="number">1000000000000L</span>);</span><br></pre></td></tr></table></figure>
+<p><strong>构造器引用时，被引用的构造方法与函数式接口抽象方法参数列表一致</strong></p>
+<h1 id="5-数组引用"><a href="#5-数组引用" class="headerlink" title="5. 数组引用"></a>5. 数组引用</h1><p>语法：<code>Type[]::new</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Function&lt;Integer, <span class="keyword">int</span>[]&gt; fun = n -&gt; <span class="keyword">new</span> <span class="keyword">int</span>[n];</span><br><span class="line"><span class="keyword">int</span>[] arr = fun.apply(<span class="number">10</span>);</span><br></pre></td></tr></table></figure>
+
+<p>​    等价于：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Function&lt;Integer, <span class="keyword">int</span>[]&gt; fun = <span class="keyword">int</span>[]::<span class="keyword">new</span>;</span><br><span class="line"><span class="keyword">int</span>[] arr = fun.apply(<span class="number">10</span>);</span><br></pre></td></tr></table></figure>
+<p><strong>数组引用时，函数式接口抽象方法参数(数值型)即为数组初始化大小值</strong></p>
+]]></content>
+      <categories>
+        <category>lambda</category>
+      </categories>
+      <tags>
+        <tag>java</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>反射基础运用</title>
+    <url>/20190101/reflect/b01167aa3bca.html</url>
+    <content><![CDATA[<h2 id="1-什么是反射？"><a href="#1-什么是反射？" class="headerlink" title="1.什么是反射？"></a>1.什么是反射？</h2><p>反射是指在程序运行时期可以动态的加载类并访问、检测和修改对象的一种能力。 那为什么要使用反射呢？编程时一般会遇到这种情况，编译时期无法确定对象类型，只有在运行时期才能确定，比如Spring的配置中就大量使用了反射机制。通过反射能够获取到类的一切信息，访问到对象的一切属性和方法，包括private修饰的属性和方法。  </p>
+<p>Class类与java.lang.reflect类库一起对反射进行了支持。 java.lang.reflect类库包含了Field、Method、Constructor等类，Field类：关联一个字段，Field对象可以对该字段进行操作，比如用Field的set()和get()方法可以获取和修改关联字段的值；Method类：关联一个方法，用Metond的invoke()方法可以调用Method对象关联的方法；Constructor类： 关联构造器方法，调用Constructor类的newInstance()用来创建对象。而这三个类都可以通过Class对象获得。</p>
+<h2 id="2-Class类介绍"><a href="#2-Class类介绍" class="headerlink" title="2.Class类介绍"></a>2.Class类介绍</h2><p>在学习使用反射之前，我们先来了解一下Class类。什么是Class类呢？我们不妨先把Java中的对象分为两种，一种是我们通常自己定义的类型对象，即“常规”对象，另一种是class对象，而每一个类在编译是都会产生一个class对象（被保存在一个同名的.class文件中），在Java程序运行时，可以通过Class对象获得对应类型的一切信息，比如该类有哪些方法、哪些构造方法、是不是接口等信息，是一个类型的描述对象。实际上Class类也是一个普通类，但是它的对象记录着对应类的一切信息，甚至该类的所有对象也都是有他的class对象完成创建的。</p>
+<h2 id="2-1-如何获取class对象"><a href="#2-1-如何获取class对象" class="headerlink" title="2.1 如何获取class对象"></a>2.1 如何获取class对象</h2><p>每一个类都会存在一个唯一的Class对象，那么该如何获取Class对象呢？ 有三种方式：    </p>
+<ul>
+<li><strong>Class.forName(“类全名字符串”)</strong>  </li>
+<li><strong>实例对象.getClass()</strong>  </li>
+<li><strong>类名.class (此方式来创建Class对象时，不会自动的初始化该Class对象)</strong>  </li>
+</ul>
+<p>对于基本类型也存在Class对象，基本类型的包装器类型都有一个标准字段TYPE，此TYPE字段就是对应基本类型的class对象的引用。  </p>
+<h3 id="2-2-示例代码"><a href="#2-2-示例代码" class="headerlink" title="2.2 示例代码"></a>2.2 示例代码</h3><p>首先创建一个Student类（后续示例都延用此类）：</p>
+<figure class="highlight java"><figcaption><span>Student.java</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.taicw.code;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Student</span> </span>&#123;</span><br><span class="line">  <span class="keyword">public</span> String name;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">Student</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">this</span>.name = <span class="string">&quot;张三&quot;</span>;</span><br><span class="line">      <span class="keyword">this</span>.age = <span class="number">18</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">Student</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">this</span>.name = name;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="title">Student</span><span class="params">(<span class="keyword">int</span> age)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">this</span>.age = age;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="title">Student</span><span class="params">(String name, <span class="keyword">int</span> age)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">this</span>.name = name;</span><br><span class="line">      <span class="keyword">this</span>.age = age;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> name;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">this</span>.name = name;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getAge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> age;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAge</span><span class="params">(<span class="keyword">int</span> age)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">this</span>.age = age;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">study</span><span class="params">(String course)</span> </span>&#123;</span><br><span class="line">      System.out.println(<span class="string">&quot;我正在学习：&quot;</span> + course);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">sleep</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      System.out.println(<span class="string">&quot;我正在睡觉zzz&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="string">&quot;&#123; name:&quot;</span> + name + <span class="string">&quot;, age:&quot;</span> + age + <span class="string">&quot; &#125;&quot;</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><figcaption><span>Demo.java</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.taicw.code;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">/*第一种方式：Class.forName(&quot;类全名&quot;)*/</span></span><br><span class="line">        Class&lt;?&gt; studentClass1 = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            studentClass1 = Class.forName(<span class="string">&quot;com.taicw.code.Student&quot;</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;类型不存在&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*第二中种方式：类名.class*/</span></span><br><span class="line">        Class&lt;?&gt; studentClass2 = Student.class;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*第三种方式：实例对象.getClass()*/</span></span><br><span class="line">        Student student = <span class="keyword">new</span> Student();</span><br><span class="line">        Class&lt;?&gt; studentClass3 = student.getClass();</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;三种方式获取的Class对象是否为同一个? &quot;</span> +</span><br><span class="line">                (studentClass1 == studentClass2 &amp;&amp; studentClass2 == studentClass3));</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;int.class == Integer.class ? &quot;</span> + (<span class="keyword">int</span>.class == Integer.class));</span><br><span class="line">        System.out.println(<span class="string">&quot;Integer.TYPE == Integer.class ? &quot;</span> + (Integer.TYPE == Integer.class));</span><br><span class="line">        System.out.println(<span class="string">&quot;int.class == Integer.TYPE ? &quot;</span> + (<span class="keyword">int</span>.class == Integer.TYPE));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*返回结果：</span></span><br><span class="line"><span class="comment">三种方式获取的Class对象是否为同一个? true</span></span><br><span class="line"><span class="comment">int.class == Integer.class ? false</span></span><br><span class="line"><span class="comment">Integer.TYPE == Integer.class ? false</span></span><br><span class="line"><span class="comment">int.class == Integer.TYPE ? true</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+<h3 id="2-3-类型判断"><a href="#2-3-类型判断" class="headerlink" title="2.3 类型判断"></a>2.3 类型判断</h3><p>在程序运行时期，我们拿到Class对象后，可能还会需要判断一个对象的类型，根据不同的类型做不同的逻辑处理，判断类型的方式有三种，下面比较一下三种方式的不同点和使用：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>instanceof</th>
+<th>isInstance</th>
+<th>isAssignableFrom</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>表现形式</td>
+<td>关键字</td>
+<td>方法</td>
+<td>方法</td>
+</tr>
+<tr>
+<td>使用方法</td>
+<td>obj instanceof Type</td>
+<td>class.isInstance(obj)</td>
+<td>class1.isAssignableFrom(class2)</td>
+</tr>
+<tr>
+<td>作用</td>
+<td>Java的关键字，用于判断一个对象（obj）是否为一个类（Type）或者该类的子类的实例</td>
+<td>Class类对象的一个方法，判断一个对象是否是该Class对象所表示的类或其子类的实例。</td>
+<td>Class类对象的一个方法，其参数也是Class类的对象，用于判断class1是否与class2对象为同一类型或class2的超类或接口。</td>
+</tr>
+</tbody></table>
+<h2 id="3-反射的基本使用"><a href="#3-反射的基本使用" class="headerlink" title="3.反射的基本使用"></a>3.反射的基本使用</h2><h3 id="3-1-获取构造器信息并创建实例"><a href="#3-1-获取构造器信息并创建实例" class="headerlink" title="3.1 获取构造器信息并创建实例"></a>3.1 获取构造器信息并创建实例</h3><p>上面已经说了任何类型的对象实际上就是其对应的Calss对象创建，那么我们拿到了class对象后该如何去创建一个对象呢？  </p>
+<p><strong>第一种方式：通过Class对象的newInstance()方法来创建对应类型的实例对象。</strong> class对象的newInstance()方法使用的是对应类型的默认构造方法（无参构造方法），所以该方式必须要保证Class对应类型必须要有一个无参构造方法。那么如果我们需要使用有参构造方法怎么办呢？还有另一种方式。<br><strong>第二种：先通过Class对象获取相关的Constructor对象（每一个构造方法对应一个Constructor对象），再调用Constructor对象的newInstance()方法来创建实例。</strong> 通过Class对象获取构造器对象主要有一下几个方法：  </p>
+<ul>
+<li><p>public Constructor&lt;?&gt;[] <code>getConstructors()</code>：获取Class对象关联类型的所有public修饰的构造器对  </p>
+</li>
+<li><p>public Constructor&lt;?&gt;[] <code>getDeclaredConstructors()</code>：获取Class对象关联类型的所有构造器对象  </p>
+</li>
+<li><p>public Constructor<T> <code>getConstructor(Class&lt;?&gt;... parameterTypes)</code>：根据参数类型获取指定的public修饰的构造器对象  </p>
+</li>
+<li><p>public Constructor<T> <code>getDeclaredConstructor(Class&lt;?&gt;... parameterTypes)</code>：根据参数类型获取指定的构造器对象（包括任意限定符修饰的构造方法） </p>
+</li>
+<li><p>public T <code>newInstance(Object ... initargs)</code>：获取构造器对象后，调用该方法并按顺序传入参数对象来创建实例  </p>
+</li>
+</ul>
+<figure class="highlight java"><figcaption><span>Demo.java</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.taicw.code;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Constructor;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        Class&lt;Student&gt; studentClass = Student.class;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*通过Class对象的newInstance()方法创建实例*/</span></span><br><span class="line">        Student zhangsan =  studentClass.newInstance();</span><br><span class="line">        System.out.println(zhangsan);</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*通过Constructor对象的newInstance()方法创建实例*/</span></span><br><span class="line">        System.out.println(<span class="string">&quot;获取所有的public构造器对象：&quot;</span>);</span><br><span class="line">        Constructor&lt;?&gt;[] allPublicConstructors = studentClass.getConstructors();</span><br><span class="line">        <span class="keyword">for</span> (Constructor c: allPublicConstructors)&#123;</span><br><span class="line">            System.out.println(c);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">&quot;获取所有的构造器对象：&quot;</span>);</span><br><span class="line">        Constructor&lt;?&gt;[] allConstructors = studentClass.getDeclaredConstructors();</span><br><span class="line">        <span class="keyword">for</span> (Constructor c: allConstructors) &#123;</span><br><span class="line">            System.out.println(c);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Constructor&lt;Student&gt; studentPublicConstructor = studentClass.getConstructor(String.class);</span><br><span class="line">        Student lisi = studentPublicConstructor.newInstance(<span class="string">&quot;李四&quot;</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;根据参数类型获取指定public构造器对象来创建关联类型实例：&quot;</span> + lisi);</span><br><span class="line"></span><br><span class="line">        Constructor&lt;Student&gt; studentPrivateConstructor = studentClass.getDeclaredConstructor(String.class, <span class="keyword">int</span>.class);</span><br><span class="line">        studentPrivateConstructor.setAccessible(<span class="keyword">true</span>); <span class="comment">/*调用是由构造器之前需要设置访问标志为true*/</span></span><br><span class="line">        Student wangwu = studentPrivateConstructor.newInstance(<span class="string">&quot;王五&quot;</span>, <span class="number">20</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;根据参数类型获取指定private构造器对象来创建关联类型实例：&quot;</span> + wangwu);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*返回结果：</span></span><br><span class="line"><span class="comment">&#123; name:张三, age:18 &#125;</span></span><br><span class="line"><span class="comment">获取所有的public构造器对象：</span></span><br><span class="line"><span class="comment">public com.taicw.code.Student(java.lang.String)</span></span><br><span class="line"><span class="comment">public com.taicw.code.Student()</span></span><br><span class="line"><span class="comment">获取所有的构造器对象：</span></span><br><span class="line"><span class="comment">private com.taicw.code.Student(java.lang.String,int)</span></span><br><span class="line"><span class="comment">private com.taicw.code.Student(int)</span></span><br><span class="line"><span class="comment">public com.taicw.code.Student(java.lang.String)</span></span><br><span class="line"><span class="comment">public com.taicw.code.Student()</span></span><br><span class="line"><span class="comment">根据参数类型获取指定public构造器对象来创建关联类型实例：&#123; name:李四, age:0 &#125;</span></span><br><span class="line"><span class="comment">根据参数类型获取指定private构造器对象来创建关联类型实例：&#123; name:王五, age:20 &#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-获取Method信息并调用其关联方法"><a href="#3-2-获取Method信息并调用其关联方法" class="headerlink" title="3.2 获取Method信息并调用其关联方法"></a>3.2 获取Method信息并调用其关联方法</h3><p>通过Class对象获取Method对象主要有以下几个方法：  </p>
+<ul>
+<li><p>public Method[] <code>getMethods()</code>：获取关联类型的所有公有（public）方法对象，包括其父类的所有公有方法对象  </p>
+</li>
+<li><p>public Method[] <code>getDeclaredMethods()</code>：获取关联类型的所有方法（包括public、protected、default、private修饰的方法）对象，但不包括其父类的方法对象  </p>
+</li>
+<li><p>public Method <code>getMethod(String name, Class&lt;?&gt;... parameterTypes)</code>：根据方法名和方法参数类型获取指定的公有方法对象  </p>
+</li>
+<li><p>public Method <code>getDeclaredMethod(String name, Class&lt;?&gt;... parameterTypes)</code>：根据方法名和方法参数类型获取指定的所有(不包含父类)方法对象  </p>
+</li>
+<li><p>public Object <code>invoke(Object obj, Object... args)</code>：通过Method对象来执行指定对象的方法，第一个参数为要执行该方法的对象，后面为方法参数，按顺序传入  </p>
+</li>
+</ul>
+<figure class="highlight java"><figcaption><span>Demo.java</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.taicw.code;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Method;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        Class&lt;?&gt; studentClass = Student.class;</span><br><span class="line"></span><br><span class="line">        Method[] allPublicMethods = studentClass.getMethods();</span><br><span class="line">        System.out.println(<span class="string">&quot;获取关联类型的所有公有（public）方法，包括其父类的所有公有方法：&quot;</span> );</span><br><span class="line">        <span class="keyword">for</span> (Method m: allPublicMethods)&#123;</span><br><span class="line">            System.out.println(m);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Method[] allMethods = studentClass.getDeclaredMethods();</span><br><span class="line">        System.out.println(<span class="string">&quot;获取关联类型的所有方法（public、protected、default、private修饰的方法），但不包括其父类的方法：&quot;</span> );</span><br><span class="line">        <span class="keyword">for</span> (Method m: allMethods)&#123;</span><br><span class="line">            System.out.println(m);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Method publicMethod = studentClass.getMethod(<span class="string">&quot;study&quot;</span>, String.class);</span><br><span class="line">        System.out.println(<span class="string">&quot;根据方法名和方法参数类型 获取指定的公有method对象：&quot;</span>);</span><br><span class="line">        System.out.println(publicMethod);</span><br><span class="line"></span><br><span class="line">        Method privateMethod = studentClass.getDeclaredMethod(<span class="string">&quot;sleep&quot;</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;根据方法名和方法参数类型 获取指定的私有method对象：&quot;</span>);</span><br><span class="line">        System.out.println(privateMethod);</span><br><span class="line"></span><br><span class="line">        Object obj = studentClass.newInstance();</span><br><span class="line">        publicMethod.invoke(obj,<span class="string">&quot;English&quot;</span>);</span><br><span class="line"></span><br><span class="line">        privateMethod.setAccessible(<span class="keyword">true</span>); <span class="comment">/*访问私有方法前，需要设置访问标志为true*/</span></span><br><span class="line">        privateMethod.invoke(obj);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*返回结果：</span></span><br><span class="line"><span class="comment">获取关联类型的所有公有（public）方法，包括其父类的所有公有方法：</span></span><br><span class="line"><span class="comment">public java.lang.String com.taicw.code.Student.toString()</span></span><br><span class="line"><span class="comment">public java.lang.String com.taicw.code.Student.getName()</span></span><br><span class="line"><span class="comment">public void com.taicw.code.Student.setName(java.lang.String)</span></span><br><span class="line"><span class="comment">public void com.taicw.code.Student.study(java.lang.String)</span></span><br><span class="line"><span class="comment">public int com.taicw.code.Student.getAge()</span></span><br><span class="line"><span class="comment">public void com.taicw.code.Student.setAge(int)</span></span><br><span class="line"><span class="comment">public final void java.lang.Object.wait() throws java.lang.InterruptedException</span></span><br><span class="line"><span class="comment">public final void java.lang.Object.wait(long,int) throws java.lang.InterruptedException</span></span><br><span class="line"><span class="comment">public final native void java.lang.Object.wait(long) throws java.lang.InterruptedException</span></span><br><span class="line"><span class="comment">public boolean java.lang.Object.equals(java.lang.Object)</span></span><br><span class="line"><span class="comment">public native int java.lang.Object.hashCode()</span></span><br><span class="line"><span class="comment">public final native java.lang.Class java.lang.Object.getClass()</span></span><br><span class="line"><span class="comment">public final native void java.lang.Object.notify()</span></span><br><span class="line"><span class="comment">public final native void java.lang.Object.notifyAll()</span></span><br><span class="line"><span class="comment">获取关联类型的所有方法（public、protected、default、private修饰的方法），但不包括其父类的方法：</span></span><br><span class="line"><span class="comment">public java.lang.String com.taicw.code.Student.toString()</span></span><br><span class="line"><span class="comment">public java.lang.String com.taicw.code.Student.getName()</span></span><br><span class="line"><span class="comment">public void com.taicw.code.Student.setName(java.lang.String)</span></span><br><span class="line"><span class="comment">private void com.taicw.code.Student.sleep()</span></span><br><span class="line"><span class="comment">public void com.taicw.code.Student.study(java.lang.String)</span></span><br><span class="line"><span class="comment">public int com.taicw.code.Student.getAge()</span></span><br><span class="line"><span class="comment">public void com.taicw.code.Student.setAge(int)</span></span><br><span class="line"><span class="comment">根据方法名和方法参数类型 获取指定的公有method对象：</span></span><br><span class="line"><span class="comment">public void com.taicw.code.Student.study(java.lang.String)</span></span><br><span class="line"><span class="comment">根据方法名和方法参数类型 获取指定的私有method对象：</span></span><br><span class="line"><span class="comment">private void com.taicw.code.Student.sleep()</span></span><br><span class="line"><span class="comment">我正在学习：English</span></span><br><span class="line"><span class="comment">我正在睡觉zzz</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-获取Field信息并操作其关联属性"><a href="#3-3-获取Field信息并操作其关联属性" class="headerlink" title="3.3 获取Field信息并操作其关联属性"></a>3.3 获取Field信息并操作其关联属性</h3><p>通过Class对象获取Field对象主要有以下几个方法：  </p>
+<ul>
+<li><p>public Field[] <code>getFields()</code>：获取关联类型的所有公有（public）属相对象，包括其父类的所有公有属性  </p>
+</li>
+<li><p>public Field[] <code>getDeclaredFields()</code>：获取关联类型的所有属性（包括public、protected、default、private修饰的属性）对象，但不包括其父类的属性  </p>
+</li>
+<li><p>public Field <code>getField(String name)</code>：根据属性名称获取指定的公有属性对象  </p>
+</li>
+<li><p>public Field <code>getDeclaredField(String name)</code>：根据属性名称获取任意的属性对象，但不包括父类的属性  </p>
+</li>
+</ul>
+<ul>
+<li><p>public void <code>set(Object obj, Object value)</code>：获取Field对象后，为指定对象属性赋值  </p>
+</li>
+<li><p>public Object <code>get(Object obj)</code>：通过Field对象，获取指定对象的属性值  </p>
+</li>
+</ul>
+<figure class="highlight java"><figcaption><span>Demo.java</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.taicw.code;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Field;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"></span><br><span class="line">        Class&lt;?&gt; studentClass = Student.class;</span><br><span class="line">        Object obj = studentClass.newInstance();</span><br><span class="line"></span><br><span class="line">        Field[] allPublicFields =  studentClass.getFields();</span><br><span class="line">        System.out.println(<span class="string">&quot;获取关联类型的所有公有属性（public修饰），包括其父类的所用公有属性：&quot;</span> );</span><br><span class="line">        <span class="keyword">for</span> (Field f: allPublicFields) &#123;</span><br><span class="line">            System.out.println(f);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Field[] allFields = studentClass.getDeclaredFields();</span><br><span class="line">        System.out.println(<span class="string">&quot;获取关联类型的所有属性（public、protected、default、private修饰的属性），但不包括其父类的属性：&quot;</span> );</span><br><span class="line">        <span class="keyword">for</span> (Field f: allFields)&#123;</span><br><span class="line">            System.out.println(f);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*根据属性名称获取公有(public)属性，包括获取其父类的公有属性*/</span></span><br><span class="line">        Field namePublicField = studentClass.getField(<span class="string">&quot;name&quot;</span>);</span><br><span class="line">        namePublicField.set(obj, <span class="string">&quot;李哈哈&quot;</span>);</span><br><span class="line">        String name = (String)namePublicField.get(obj);</span><br><span class="line">        System.out.println(<span class="string">&quot;反射获取公有属性name：&quot;</span> + name);</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*根据属性名称获取任意属性，不能获取父类的属性*/</span></span><br><span class="line">        Field agePrivateField = studentClass.getDeclaredField(<span class="string">&quot;age&quot;</span>);</span><br><span class="line">        agePrivateField.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">        agePrivateField.set(obj, <span class="number">18</span>);</span><br><span class="line">        <span class="keyword">int</span> age = (<span class="keyword">int</span>)agePrivateField.get(obj);</span><br><span class="line">        System.out.println(<span class="string">&quot;反射获取私有属性age：&quot;</span> + age);</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;通过反射设置并获取属性信息：&quot;</span> + obj.toString());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*返回结果：</span></span><br><span class="line"><span class="comment">获取关联类型的所有公有属性（public修饰），包括其父类的所用公有属性：</span></span><br><span class="line"><span class="comment">public java.lang.String com.taicw.code.Student.name</span></span><br><span class="line"><span class="comment">获取关联类型的所有属性（public、protected、default、private修饰的属性），但不包括其父类的属性：</span></span><br><span class="line"><span class="comment">public java.lang.String com.taicw.code.Student.name</span></span><br><span class="line"><span class="comment">private int com.taicw.code.Student.age</span></span><br><span class="line"><span class="comment">反射获取公有属性name：李哈哈</span></span><br><span class="line"><span class="comment">反射获取私有属性age：18</span></span><br><span class="line"><span class="comment">通过反射设置并获取属性信息：&#123; name:李哈哈, age:18 &#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+]]></content>
+      <categories>
+        <category>java</category>
+      </categories>
+      <tags>
+        <tag>java</tag>
+        <tag>反射</tag>
+      </tags>
+  </entry>
+</search>

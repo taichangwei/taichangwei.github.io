@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>飞</title>
+  <icon>https://blog.taichangwei.com/icon.png</icon>
+  <subtitle>信念之于人，犹翅膀之于鸟，信念是飞翔的翅膀</subtitle>
+  <link href="https://blog.taichangwei.com/atom.xml" rel="self"/>
+  
+  <link href="https://blog.taichangwei.com/"/>
+  <updated>2020-11-22T03:47:27.487Z</updated>
+  <id>https://blog.taichangwei.com/</id>
+  
+  <author>
+    <name>taichangwei</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>lambda表达式（二）——方法引用</title>
+    <link href="https://blog.taichangwei.com/20190202/lambda2/076a298db052.html"/>
+    <id>https://blog.taichangwei.com/20190202/lambda2/076a298db052.html</id>
+    <published>2019-02-02T07:57:33.000Z</published>
+    <updated>2020-11-22T03:47:27.487Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;当我们在使用lambda去表示某个函数式接口的实例时，需要在lambda表达式的主体里去编写函数式接口抽象方法的实现，如果在现有的类中已经存在与抽象方法类似的方法了，我们希望直接引用现有的方法，而不用再去重新写实现了。方法引用让你可以重复使用现有的方法定义，并像Lambda</summary>
+        
+      
+    
+    
+    
+    <category term="lambda" scheme="https://blog.taichangwei.com/categories/lambda/"/>
+    
+    
+    <category term="java" scheme="https://blog.taichangwei.com/tags/java/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>lambda表达式（一）——函数式接口</title>
+    <link href="https://blog.taichangwei.com/20190201/lambda1/c673d3a38bb1.html"/>
+    <id>https://blog.taichangwei.com/20190201/lambda1/c673d3a38bb1.html</id>
+    <published>2019-02-01T07:57:33.000Z</published>
+    <updated>2020-11-22T03:47:27.445Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;1-什么是lambda&quot;&gt;&lt;a href=&quot;#1-什么是lambda&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="lambda" scheme="https://blog.taichangwei.com/categories/lambda/"/>
+    
+    
+    <category term="java" scheme="https://blog.taichangwei.com/tags/java/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>反射基础运用</title>
+    <link href="https://blog.taichangwei.com/20190101/reflect/b01167aa3bca.html"/>
+    <id>https://blog.taichangwei.com/20190101/reflect/b01167aa3bca.html</id>
+    <published>2019-01-01T02:12:37.000Z</published>
+    <updated>2020-11-22T03:47:53.240Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;1-什么是反射？&quot;&gt;&lt;a href=&quot;#1-什么是反射？&quot; class=&quot;headerlink&quot; title=&quot;1.什么是反射？&quot;&gt;&lt;/a&gt;1.什么是反射？&lt;/h2&gt;&lt;p&gt;反射是指在程序运行时期可以动态的加载类并访问、检测和修改对象的一种能力。</summary>
+        
+      
+    
+    
+    
+    <category term="java" scheme="https://blog.taichangwei.com/categories/java/"/>
+    
+    
+    <category term="java" scheme="https://blog.taichangwei.com/tags/java/"/>
+    
+    <category term="反射" scheme="https://blog.taichangwei.com/tags/%E5%8F%8D%E5%B0%84/"/>
+    
+  </entry>
+  
+</feed>
