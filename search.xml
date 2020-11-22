@@ -1,6 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>lambda表达式（二）——方法引用</title>
+    <url>/20190202/lambda2/076a298db052.html</url>
+    <content><![CDATA[<p>当我们在使用lambda去表示某个函数式接口的实例时，需要在lambda表达式的主体里去编写函数式接口抽象方法的实现，如果在现有的类中已经存在与抽象方法类似的方法了，我们希望直接引用现有的方法，而不用再去重新写实现了。方法引用让你可以重复使用现有的方法定义，并像Lambda一样传递它们。</p>
+<p>方法引用和lambda表达式拥有相同的特性，它们都需要代表一个<strong>目标类型</strong>，并需要被转化为函数式接口的实例，不过我们并不需要为方法引用提供方法体，我们可以直接通过方法名称引用已有方法方。<strong>法引用要使用到操作符 “::”，左边是类名或者对象名，右边是方法名或者关键字<code>new</code></strong></p>
+<p>首先被引用方法的返回值类型要和函数式接口抽象方法的返回值类型一致，至于参数列表要根据每种引用方式而定。</p>
+<h1 id="1-静态方法引用"><a href="#1-静态方法引用" class="headerlink" title="1. 静态方法引用"></a>1. 静态方法引用</h1><p>语法：<code>ClassName::staticMethodName</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Function&lt;String, Long&gt; f = x -&gt; Long.valueOf(x);</span><br><span class="line">Long result = f.apply(<span class="string">&quot;10&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p>​    等价于：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Function&lt;String, Long&gt; f = Long::valueOf;</span><br><span class="line">Long result = f.apply(<span class="string">&quot;10&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p><strong>静态方法引用时，静态方法要与函数式接口抽象方法参数列表一致</strong></p>
+<h1 id="2-对象方法引用"><a href="#2-对象方法引用" class="headerlink" title="2. 对象方法引用"></a>2. 对象方法引用</h1><p>语法：<code>ClassName::methodName</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">BiPredicate&lt;String, String&gt; bpredicate = (x,y) -&gt; x.equals(y);</span><br><span class="line"><span class="keyword">boolean</span> result = bpredicate.test(<span class="string">&quot;abc&quot;</span>, <span class="string">&quot;abcd&quot;</span>);</span><br><span class="line"></span><br><span class="line">ToIntFunction&lt;String&gt; f = (s) -&gt; s.length();</span><br><span class="line"><span class="keyword">int</span> result2 = f.applyAsInt(<span class="string">&quot;hello&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>​    等价于：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">BiPredicate&lt;String, String&gt; bpredicate = String::equals;</span><br><span class="line"><span class="keyword">boolean</span> result = bpredicate.test(<span class="string">&quot;abc&quot;</span>, <span class="string">&quot;abcd&quot;</span>);</span><br><span class="line"></span><br><span class="line">ToIntFunction&lt;String&gt; f = String::length;</span><br><span class="line"><span class="keyword">int</span> result2 = f.applyAsInt(<span class="string">&quot;hello&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p><strong>对象方法引用时，函数式接口抽象方法的第一个参数是被引用方法的调用者，第二个参数(或者无参)是被引用方法的参数</strong></p>
+<h1 id="3-外部对象方法引用"><a href="#3-外部对象方法引用" class="headerlink" title="3. 外部对象方法引用"></a>3. 外部对象方法引用</h1><p>语法：<code>objectName::methodName</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">List&lt;String&gt; list = Arrays.asList(<span class="string">&quot;hello&quot;</span>, <span class="string">&quot;world&quot;</span>, <span class="string">&quot;aaa&quot;</span>); </span><br><span class="line">Predicate&lt;String&gt; p = (s) -&gt; list.contains(s);</span><br><span class="line"><span class="keyword">boolean</span> result = p.test(<span class="string">&quot;aaa&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>​    等价于：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">List&lt;String&gt; list = Arrays.asList(<span class="string">&quot;hello&quot;</span>, <span class="string">&quot;world&quot;</span>, <span class="string">&quot;aaa&quot;</span>);</span><br><span class="line">Predicate&lt;String&gt; p = list::contains; </span><br><span class="line"><span class="keyword">boolean</span> result = p.test(<span class="string">&quot;aaa&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p><strong>外部对象方法引用时，被引用方法与函数式接口抽象方法参数列表一致</strong></p>
+<h1 id="4-构造器引用"><a href="#4-构造器引用" class="headerlink" title="4. 构造器引用"></a>4. 构造器引用</h1><p>语法：<code>ClassName::new</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Function&lt;Long, Date&gt; fun = (millisecond) -&gt; <span class="keyword">new</span> Date(millisecond);</span><br><span class="line">Date date = fun.apply(<span class="number">1000000000000L</span>);</span><br></pre></td></tr></table></figure>
+
+<p>​    等价于：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Function&lt;Long, Date&gt; fun = Date::<span class="keyword">new</span>;</span><br><span class="line">Date date = fun.apply(<span class="number">1000000000000L</span>);</span><br></pre></td></tr></table></figure>
+<p><strong>构造器引用时，被引用的构造方法与函数式接口抽象方法参数列表一致</strong></p>
+<h1 id="5-数组引用"><a href="#5-数组引用" class="headerlink" title="5. 数组引用"></a>5. 数组引用</h1><p>语法：<code>Type[]::new</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Function&lt;Integer, <span class="keyword">int</span>[]&gt; fun = n -&gt; <span class="keyword">new</span> <span class="keyword">int</span>[n];</span><br><span class="line"><span class="keyword">int</span>[] arr = fun.apply(<span class="number">10</span>);</span><br></pre></td></tr></table></figure>
+
+<p>​    等价于：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Function&lt;Integer, <span class="keyword">int</span>[]&gt; fun = <span class="keyword">int</span>[]::<span class="keyword">new</span>;</span><br><span class="line"><span class="keyword">int</span>[] arr = fun.apply(<span class="number">10</span>);</span><br></pre></td></tr></table></figure>
+<p><strong>数组引用时，函数式接口抽象方法参数(数值型)即为数组初始化大小值</strong></p>
+]]></content>
+      <categories>
+        <category>lambda</category>
+      </categories>
+      <tags>
+        <tag>java</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>lambda表达式（一）——函数式接口</title>
     <url>/20190201/lambda1/c673d3a38bb1.html</url>
     <content><![CDATA[<h2 id="1-什么是lambda"><a href="#1-什么是lambda" class="headerlink" title="1.什么是lambda?"></a>1.什么是lambda?</h2><p>如果我们想要起一个线程来打印一串字符串，我们之前的写法通常是这样：</p>
@@ -81,49 +124,6 @@
 <h2 id="3-lambda使用局部变量的限制"><a href="#3-lambda使用局部变量的限制" class="headerlink" title="3.lambda使用局部变量的限制"></a>3.lambda使用局部变量的限制</h2><p>lambda可以没有限制的在主体中引用实例变量和静态变量，但是引用的局部变量必须声明为<code>final</code>或者事实上是<code>final</code>。因为成员变量存储在堆中，而局部变量保存在栈上。如果Lambda可以直接访问局部变量，而且Lambda是在另一个线程中使用的，则使用Lambda的线程时，可能会在分配该局部变量的线程将这个变量收回之后去访问该变量。因此，Java在访问局部变量时，实际上是在访问它的副本，而不是访问原始变量，如果局部变量仅仅赋值一次,那么副本和原始变量就没有什么区别了——因此就有了这个限制，要保证副本和原始值保持一致。<br>例如下面的代码，如果把 “//name = “jack”;” 注释去掉，就会报错</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line">ExecutorService executorService = Executors.newFixedThreadPool(<span class="number">3</span>);</span><br><span class="line">String name = <span class="string">&quot;tome&quot;</span>;</span><br><span class="line">executorService.execute(() -&gt; System.out.println(<span class="string">&quot;hello &quot;</span> + name));</span><br><span class="line"><span class="comment">//name = &quot;jack&quot;;</span></span><br><span class="line">executorService.shutdown();</span><br></pre></td></tr></table></figure>
 
-]]></content>
-      <categories>
-        <category>lambda</category>
-      </categories>
-      <tags>
-        <tag>java</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>lambda表达式（二）——方法引用</title>
-    <url>/20190202/lambda2/076a298db052.html</url>
-    <content><![CDATA[<p>当我们在使用lambda去表示某个函数式接口的实例时，需要在lambda表达式的主体里去编写函数式接口抽象方法的实现，如果在现有的类中已经存在与抽象方法类似的方法了，我们希望直接引用现有的方法，而不用再去重新写实现了。方法引用让你可以重复使用现有的方法定义，并像Lambda一样传递它们。</p>
-<p>方法引用和lambda表达式拥有相同的特性，它们都需要代表一个<strong>目标类型</strong>，并需要被转化为函数式接口的实例，不过我们并不需要为方法引用提供方法体，我们可以直接通过方法名称引用已有方法方。<strong>法引用要使用到操作符 “::”，左边是类名或者对象名，右边是方法名或者关键字<code>new</code></strong></p>
-<p>首先被引用方法的返回值类型要和函数式接口抽象方法的返回值类型一致，至于参数列表要根据每种引用方式而定。</p>
-<h1 id="1-静态方法引用"><a href="#1-静态方法引用" class="headerlink" title="1. 静态方法引用"></a>1. 静态方法引用</h1><p>语法：<code>ClassName::staticMethodName</code></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Function&lt;String, Long&gt; f = x -&gt; Long.valueOf(x);</span><br><span class="line">Long result = f.apply(<span class="string">&quot;10&quot;</span>);</span><br></pre></td></tr></table></figure>
-<p>​    等价于：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Function&lt;String, Long&gt; f = Long::valueOf;</span><br><span class="line">Long result = f.apply(<span class="string">&quot;10&quot;</span>);</span><br></pre></td></tr></table></figure>
-<p><strong>静态方法引用时，静态方法要与函数式接口抽象方法参数列表一致</strong></p>
-<h1 id="2-对象方法引用"><a href="#2-对象方法引用" class="headerlink" title="2. 对象方法引用"></a>2. 对象方法引用</h1><p>语法：<code>ClassName::methodName</code></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">BiPredicate&lt;String, String&gt; bpredicate = (x,y) -&gt; x.equals(y);</span><br><span class="line"><span class="keyword">boolean</span> result = bpredicate.test(<span class="string">&quot;abc&quot;</span>, <span class="string">&quot;abcd&quot;</span>);</span><br><span class="line"></span><br><span class="line">ToIntFunction&lt;String&gt; f = (s) -&gt; s.length();</span><br><span class="line"><span class="keyword">int</span> result2 = f.applyAsInt(<span class="string">&quot;hello&quot;</span>);</span><br></pre></td></tr></table></figure>
-
-<p>​    等价于：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">BiPredicate&lt;String, String&gt; bpredicate = String::equals;</span><br><span class="line"><span class="keyword">boolean</span> result = bpredicate.test(<span class="string">&quot;abc&quot;</span>, <span class="string">&quot;abcd&quot;</span>);</span><br><span class="line"></span><br><span class="line">ToIntFunction&lt;String&gt; f = String::length;</span><br><span class="line"><span class="keyword">int</span> result2 = f.applyAsInt(<span class="string">&quot;hello&quot;</span>);</span><br></pre></td></tr></table></figure>
-<p><strong>对象方法引用时，函数式接口抽象方法的第一个参数是被引用方法的调用者，第二个参数(或者无参)是被引用方法的参数</strong></p>
-<h1 id="3-外部对象方法引用"><a href="#3-外部对象方法引用" class="headerlink" title="3. 外部对象方法引用"></a>3. 外部对象方法引用</h1><p>语法：<code>objectName::methodName</code></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">List&lt;String&gt; list = Arrays.asList(<span class="string">&quot;hello&quot;</span>, <span class="string">&quot;world&quot;</span>, <span class="string">&quot;aaa&quot;</span>); </span><br><span class="line">Predicate&lt;String&gt; p = (s) -&gt; list.contains(s);</span><br><span class="line"><span class="keyword">boolean</span> result = p.test(<span class="string">&quot;aaa&quot;</span>);</span><br></pre></td></tr></table></figure>
-
-<p>​    等价于：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">List&lt;String&gt; list = Arrays.asList(<span class="string">&quot;hello&quot;</span>, <span class="string">&quot;world&quot;</span>, <span class="string">&quot;aaa&quot;</span>);</span><br><span class="line">Predicate&lt;String&gt; p = list::contains; </span><br><span class="line"><span class="keyword">boolean</span> result = p.test(<span class="string">&quot;aaa&quot;</span>);</span><br></pre></td></tr></table></figure>
-<p><strong>外部对象方法引用时，被引用方法与函数式接口抽象方法参数列表一致</strong></p>
-<h1 id="4-构造器引用"><a href="#4-构造器引用" class="headerlink" title="4. 构造器引用"></a>4. 构造器引用</h1><p>语法：<code>ClassName::new</code></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Function&lt;Long, Date&gt; fun = (millisecond) -&gt; <span class="keyword">new</span> Date(millisecond);</span><br><span class="line">Date date = fun.apply(<span class="number">1000000000000L</span>);</span><br></pre></td></tr></table></figure>
-
-<p>​    等价于：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Function&lt;Long, Date&gt; fun = Date::<span class="keyword">new</span>;</span><br><span class="line">Date date = fun.apply(<span class="number">1000000000000L</span>);</span><br></pre></td></tr></table></figure>
-<p><strong>构造器引用时，被引用的构造方法与函数式接口抽象方法参数列表一致</strong></p>
-<h1 id="5-数组引用"><a href="#5-数组引用" class="headerlink" title="5. 数组引用"></a>5. 数组引用</h1><p>语法：<code>Type[]::new</code></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Function&lt;Integer, <span class="keyword">int</span>[]&gt; fun = n -&gt; <span class="keyword">new</span> <span class="keyword">int</span>[n];</span><br><span class="line"><span class="keyword">int</span>[] arr = fun.apply(<span class="number">10</span>);</span><br></pre></td></tr></table></figure>
-
-<p>​    等价于：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Function&lt;Integer, <span class="keyword">int</span>[]&gt; fun = <span class="keyword">int</span>[]::<span class="keyword">new</span>;</span><br><span class="line"><span class="keyword">int</span>[] arr = fun.apply(<span class="number">10</span>);</span><br></pre></td></tr></table></figure>
-<p><strong>数组引用时，函数式接口抽象方法参数(数值型)即为数组初始化大小值</strong></p>
 ]]></content>
       <categories>
         <category>lambda</category>
