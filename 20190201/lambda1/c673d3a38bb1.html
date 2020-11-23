@@ -72,9 +72,8 @@
     </header>
      
     <div class="article-meta">
-      <a href="/20190201/lambda1/c673d3a38bb1.html" class="article-date">
-  <time datetime="2019-02-01T07:57:33.000Z" itemprop="datePublished">2019-02-01</time>
-</a> 
+      
+      
   <div class="article-category">
     <a class="article-category-link" href="/categories/lambda/">lambda</a>
   </div>
@@ -111,6 +110,7 @@
   <h2 id="1-什么是lambda"><a href="#1-什么是lambda" class="headerlink" title="1.什么是lambda?"></a>1.什么是lambda?</h2><p>如果我们想要起一个线程来打印一串字符串，我们之前的写法通常是这样：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">ExecutorService executorService = Executors.newFixedThreadPool(<span class="number">3</span>);</span><br><span class="line">executorService.execute(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;hello world!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line">executorService.shutdown();</span><br></pre></td></tr></table></figure>
 <p>使用lambda表达式后，可以改写为这个样：</p>
+<a id="more"></a>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ExecutorService executorService = Executors.newFixedThreadPool(<span class="number">3</span>);</span><br><span class="line">executorService.execute(() -&gt; System.out.println(<span class="string">&quot;hello world!&quot;</span>));</span><br><span class="line">executorService.shutdown();</span><br></pre></td></tr></table></figure>
 <p>我们可以看到使用lambda表达式后，代码变得更加简洁，这里的 “<code>() -&gt; System.out.println(&quot;hello word!&quot;)</code>“ 其实就相当于Runnable接口的匿名实现，你会发现Runnable的抽象方法<code>run()</code>的签名与<code>() -&gt; System.out.println(&quot;hello word!&quot;)</code>的签名是一致的（lambda表达式的签名下面会讲到）。简而言之，可以把Lambda表达式理解为<strong>简洁地表示可传递的匿名函数的一种方式，它没有名称，但它有参数列表、函数主体、返回类型，可能还有一个可以抛出的异常列表。</strong></p>
 <p>lambda表达式由三部分构成：<strong>参数列表</strong>、**-&gt;(分割符)<strong>、</strong>主体**，基本语法如下：<br><code>(parameters) -&gt; expression</code> 或者 <code>(parameters) -&gt; &#123; statements; &#125;</code></p>

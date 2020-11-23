@@ -2,23 +2,37 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://blog.taichangwei.com/20190816/post/191434a07b67.html</loc>
+    
+    <lastmod>2020-11-23</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://blog.taichangwei.com/20190101/reflect/b01167aa3bca.html</loc>
     
-    <lastmod>2020-11-22</lastmod>
+    <lastmod>2020-11-23</lastmod>
     
   </url>
   
   <url>
     <loc>https://blog.taichangwei.com/20190202/lambda2/076a298db052.html</loc>
     
-    <lastmod>2020-11-22</lastmod>
+    <lastmod>2020-11-23</lastmod>
     
   </url>
   
   <url>
     <loc>https://blog.taichangwei.com/20190201/lambda1/c673d3a38bb1.html</loc>
     
-    <lastmod>2020-11-22</lastmod>
+    <lastmod>2020-11-23</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://blog.taichangwei.com/20200501/jvmParamType/218e2c7235be.html</loc>
+    
+    <lastmod>2020-11-23</lastmod>
     
   </url>
   
@@ -53,7 +67,7 @@
 
   <url>
     <loc>https://blog.taichangwei.com/</loc>
-    <lastmod>2020-11-22</lastmod>
+    <lastmod>2020-11-23</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -61,14 +75,28 @@
   
   <url>
     <loc>https://blog.taichangwei.com/tags/java/</loc>
-    <lastmod>2020-11-22</lastmod>
+    <lastmod>2020-11-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.taichangwei.com/tags/jvm%E5%8F%82%E6%95%B0/</loc>
+    <lastmod>2020-11-23</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://blog.taichangwei.com/tags/%E5%8F%8D%E5%B0%84/</loc>
-    <lastmod>2020-11-22</lastmod>
+    <lastmod>2020-11-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.taichangwei.com/tags/activeMQ/</loc>
+    <lastmod>2020-11-23</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
@@ -77,14 +105,28 @@
   
   <url>
     <loc>https://blog.taichangwei.com/categories/lambda/</loc>
-    <lastmod>2020-11-22</lastmod>
+    <lastmod>2020-11-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.taichangwei.com/categories/jvm/</loc>
+    <lastmod>2020-11-23</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://blog.taichangwei.com/categories/java/</loc>
-    <lastmod>2020-11-22</lastmod>
+    <lastmod>2020-11-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.taichangwei.com/categories/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6/</loc>
+    <lastmod>2020-11-23</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>

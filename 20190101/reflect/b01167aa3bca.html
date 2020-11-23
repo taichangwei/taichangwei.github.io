@@ -72,9 +72,8 @@
     </header>
      
     <div class="article-meta">
-      <a href="/20190101/reflect/b01167aa3bca.html" class="article-date">
-  <time datetime="2019-01-01T02:12:37.000Z" itemprop="datePublished">2019-01-01</time>
-</a> 
+      
+      
   <div class="article-category">
     <a class="article-category-link" href="/categories/java/">java</a>
   </div>
@@ -109,6 +108,8 @@
     <div class="article-entry" itemprop="articleBody">
        
   <h2 id="1-什么是反射？"><a href="#1-什么是反射？" class="headerlink" title="1.什么是反射？"></a>1.什么是反射？</h2><p>反射是指在程序运行时期可以动态的加载类并访问、检测和修改对象的一种能力。 那为什么要使用反射呢？编程时一般会遇到这种情况，编译时期无法确定对象类型，只有在运行时期才能确定，比如Spring的配置中就大量使用了反射机制。通过反射能够获取到类的一切信息，访问到对象的一切属性和方法，包括private修饰的属性和方法。  </p>
+<a id="more"></a>
+
 <p>Class类与java.lang.reflect类库一起对反射进行了支持。 java.lang.reflect类库包含了Field、Method、Constructor等类，Field类：关联一个字段，Field对象可以对该字段进行操作，比如用Field的set()和get()方法可以获取和修改关联字段的值；Method类：关联一个方法，用Metond的invoke()方法可以调用Method对象关联的方法；Constructor类： 关联构造器方法，调用Constructor类的newInstance()用来创建对象。而这三个类都可以通过Class对象获得。</p>
 <h2 id="2-Class类介绍"><a href="#2-Class类介绍" class="headerlink" title="2.Class类介绍"></a>2.Class类介绍</h2><p>在学习使用反射之前，我们先来了解一下Class类。什么是Class类呢？我们不妨先把Java中的对象分为两种，一种是我们通常自己定义的类型对象，即“常规”对象，另一种是class对象，而每一个类在编译是都会产生一个class对象（被保存在一个同名的.class文件中），在Java程序运行时，可以通过Class对象获得对应类型的一切信息，比如该类有哪些方法、哪些构造方法、是不是接口等信息，是一个类型的描述对象。实际上Class类也是一个普通类，但是它的对象记录着对应类的一切信息，甚至该类的所有对象也都是有他的class对象完成创建的。</p>
 <h2 id="2-1-如何获取class对象"><a href="#2-1-如何获取class对象" class="headerlink" title="2.1 如何获取class对象"></a>2.1 如何获取class对象</h2><p>每一个类都会存在一个唯一的Class对象，那么该如何获取Class对象呢？ 有三种方式：    </p>
@@ -207,6 +208,12 @@
 
  
       <!-- reward -->
+      
+      <div id="reword-out">
+        <div id="reward-btn">
+          打赏
+        </div>
+      </div>
       
     </div>
     

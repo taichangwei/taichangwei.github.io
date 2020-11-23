@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://blog.taichangwei.com/20190816/post/191434a07b67.html</loc>
+    <lastmod>2020-11-23</lastmod>
+  </url>
+  <url>
     <loc>https://blog.taichangwei.com/20190101/reflect/b01167aa3bca.html</loc>
-    <lastmod>2020-11-22</lastmod>
+    <lastmod>2020-11-23</lastmod>
   </url>
   <url>
     <loc>https://blog.taichangwei.com/20190202/lambda2/076a298db052.html</loc>
-    <lastmod>2020-11-22</lastmod>
+    <lastmod>2020-11-23</lastmod>
   </url>
   <url>
     <loc>https://blog.taichangwei.com/20190201/lambda1/c673d3a38bb1.html</loc>
-    <lastmod>2020-11-22</lastmod>
+    <lastmod>2020-11-23</lastmod>
+  </url>
+  <url>
+    <loc>https://blog.taichangwei.com/20200501/jvmParamType/218e2c7235be.html</loc>
+    <lastmod>2020-11-23</lastmod>
   </url>
 </urlset> 

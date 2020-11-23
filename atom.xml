@@ -6,7 +6,7 @@
   <link href="https://blog.taichangwei.com/atom.xml" rel="self"/>
   
   <link href="https://blog.taichangwei.com/"/>
-  <updated>2020-11-22T03:47:27.487Z</updated>
+  <updated>2020-11-23T14:38:34.883Z</updated>
   <id>https://blog.taichangwei.com/</id>
   
   <author>
@@ -17,20 +17,65 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>JVM参数类型</title>
+    <link href="https://blog.taichangwei.com/20200501/jvmParamType/218e2c7235be.html"/>
+    <id>https://blog.taichangwei.com/20200501/jvmParamType/218e2c7235be.html</id>
+    <published>2020-05-01T05:53:05.000Z</published>
+    <updated>2020-11-23T14:38:34.883Z</updated>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;1-参数分类&quot;&gt;&lt;a href=&quot;#1-参数分类&quot; class=&quot;headerlink&quot; title=&quot;1. 参数分类&quot;&gt;&lt;/a&gt;1. 参数分类&lt;/h1&gt;&lt;p&gt;jvm 参数可分为三类：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;标准参数：以 “&lt;code&gt;-&lt;/code&gt;“ 开头的参数&lt;/li&gt;
+&lt;li&gt;非标准参数：以 “&lt;code&gt;-X&lt;/code&gt;“ 开头的参数&lt;/li&gt;
+&lt;li&gt;不稳定参数：以”&lt;code&gt;-XX&lt;/code&gt;“ 开头的参数&lt;/li&gt;
+&lt;/ul&gt;</summary>
+    
+    
+    
+    <category term="jvm" scheme="https://blog.taichangwei.com/categories/jvm/"/>
+    
+    
+    <category term="jvm参数" scheme="https://blog.taichangwei.com/tags/jvm%E5%8F%82%E6%95%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>消息中间件之ActiveMQ入门</title>
+    <link href="https://blog.taichangwei.com/20190816/post/191434a07b67.html"/>
+    <id>https://blog.taichangwei.com/20190816/post/191434a07b67.html</id>
+    <published>2019-08-16T14:51:16.000Z</published>
+    <updated>2020-11-23T15:32:35.105Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;1-JMS与消息中间件&quot;&gt;&lt;a href=&quot;#1-JMS与消息中间件&quot; class=&quot;headerlink&quot; title=&quot;1. JMS与消息中间件&quot;&gt;&lt;/a&gt;1. JMS与消息中间件&lt;/h1&gt;&lt;h2 id=&quot;1-1-jms介绍&quot;&gt;&lt;a</summary>
+        
+      
+    
+    
+    
+    <category term="消息中间件" scheme="https://blog.taichangwei.com/categories/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6/"/>
+    
+    
+    <category term="activeMQ" scheme="https://blog.taichangwei.com/tags/activeMQ/"/>
+    
+  </entry>
+  
+  <entry>
     <title>lambda表达式（二）——方法引用</title>
     <link href="https://blog.taichangwei.com/20190202/lambda2/076a298db052.html"/>
     <id>https://blog.taichangwei.com/20190202/lambda2/076a298db052.html</id>
     <published>2019-02-02T07:57:33.000Z</published>
-    <updated>2020-11-22T03:47:27.487Z</updated>
+    <updated>2020-11-23T14:38:34.885Z</updated>
     
     
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;当我们在使用lambda去表示某个函数式接口的实例时，需要在lambda表达式的主体里去编写函数式接口抽象方法的实现，如果在现有的类中已经存在与抽象方法类似的方法了，我们希望直接引用现有的方法，而不用再去重新写实现了。方法引用让你可以重复使用现有的方法定义，并像Lambda</summary>
-        
-      
+    <summary type="html">&lt;p&gt;当我们在使用lambda去表示某个函数式接口的实例时，需要在lambda表达式的主体里去编写函数式接口抽象方法的实现，如果在现有的类中已经存在与抽象方法类似的方法了，我们希望直接引用现有的方法，而不用再去重新写实现了。方法引用让你可以重复使用现有的方法定义，并像Lambda一样传递它们。&lt;/p&gt;
+&lt;p&gt;方法引用和lambda表达式拥有相同的特性，它们都需要代表一个&lt;strong&gt;目标类型&lt;/strong&gt;，并需要被转化为函数式接口的实例，不过我们并不需要为方法引用提供方法体，我们可以直接通过方法名称引用已有方法方。&lt;strong&gt;法引用要使用到操作符 “::”，左边是类名或者对象名，右边是方法名或者关键字&lt;code&gt;new&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;首先被引用方法的返回值类型要和函数式接口抽象方法的返回值类型一致，至于参数列表要根据每种引用方式而定。&lt;/p&gt;</summary>
     
     
     
@@ -46,16 +91,12 @@
     <link href="https://blog.taichangwei.com/20190201/lambda1/c673d3a38bb1.html"/>
     <id>https://blog.taichangwei.com/20190201/lambda1/c673d3a38bb1.html</id>
     <published>2019-02-01T07:57:33.000Z</published>
-    <updated>2020-11-22T03:47:27.445Z</updated>
+    <updated>2020-11-23T14:38:34.884Z</updated>
     
     
-      
-      
-        
-        
-    <summary type="html">&lt;h2 id=&quot;1-什么是lambda&quot;&gt;&lt;a href=&quot;#1-什么是lambda&quot; class=&quot;headerlink&quot;</summary>
-        
-      
+    <summary type="html">&lt;h2 id=&quot;1-什么是lambda&quot;&gt;&lt;a href=&quot;#1-什么是lambda&quot; class=&quot;headerlink&quot; title=&quot;1.什么是lambda?&quot;&gt;&lt;/a&gt;1.什么是lambda?&lt;/h2&gt;&lt;p&gt;如果我们想要起一个线程来打印一串字符串，我们之前的写法通常是这样：&lt;/p&gt;
+&lt;figure class=&quot;highlight java&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;ExecutorService executorService = Executors.newFixedThreadPool(&lt;span class=&quot;number&quot;&gt;3&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;executorService.execute(&lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; Runnable() &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;meta&quot;&gt;@Override&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;()&lt;/span&gt; &lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        System.out.println(&lt;span class=&quot;string&quot;&gt;&amp;quot;hello world!&amp;quot;&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;executorService.shutdown();&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;使用lambda表达式后，可以改写为这个样：&lt;/p&gt;</summary>
     
     
     
@@ -71,16 +112,10 @@
     <link href="https://blog.taichangwei.com/20190101/reflect/b01167aa3bca.html"/>
     <id>https://blog.taichangwei.com/20190101/reflect/b01167aa3bca.html</id>
     <published>2019-01-01T02:12:37.000Z</published>
-    <updated>2020-11-22T03:47:53.240Z</updated>
+    <updated>2020-11-23T14:38:34.886Z</updated>
     
     
-      
-      
-        
-        
-    <summary type="html">&lt;h2 id=&quot;1-什么是反射？&quot;&gt;&lt;a href=&quot;#1-什么是反射？&quot; class=&quot;headerlink&quot; title=&quot;1.什么是反射？&quot;&gt;&lt;/a&gt;1.什么是反射？&lt;/h2&gt;&lt;p&gt;反射是指在程序运行时期可以动态的加载类并访问、检测和修改对象的一种能力。</summary>
-        
-      
+    <summary type="html">&lt;h2 id=&quot;1-什么是反射？&quot;&gt;&lt;a href=&quot;#1-什么是反射？&quot; class=&quot;headerlink&quot; title=&quot;1.什么是反射？&quot;&gt;&lt;/a&gt;1.什么是反射？&lt;/h2&gt;&lt;p&gt;反射是指在程序运行时期可以动态的加载类并访问、检测和修改对象的一种能力。 那为什么要使用反射呢？编程时一般会遇到这种情况，编译时期无法确定对象类型，只有在运行时期才能确定，比如Spring的配置中就大量使用了反射机制。通过反射能够获取到类的一切信息，访问到对象的一切属性和方法，包括private修饰的属性和方法。  &lt;/p&gt;</summary>
     
     
     

@@ -72,9 +72,8 @@
     </header>
      
     <div class="article-meta">
-      <a href="/20190202/lambda2/076a298db052.html" class="article-date">
-  <time datetime="2019-02-02T07:57:33.000Z" itemprop="datePublished">2019-02-02</time>
-</a> 
+      
+      
   <div class="article-category">
     <a class="article-category-link" href="/categories/lambda/">lambda</a>
   </div>
@@ -111,6 +110,8 @@
   <p>当我们在使用lambda去表示某个函数式接口的实例时，需要在lambda表达式的主体里去编写函数式接口抽象方法的实现，如果在现有的类中已经存在与抽象方法类似的方法了，我们希望直接引用现有的方法，而不用再去重新写实现了。方法引用让你可以重复使用现有的方法定义，并像Lambda一样传递它们。</p>
 <p>方法引用和lambda表达式拥有相同的特性，它们都需要代表一个<strong>目标类型</strong>，并需要被转化为函数式接口的实例，不过我们并不需要为方法引用提供方法体，我们可以直接通过方法名称引用已有方法方。<strong>法引用要使用到操作符 “::”，左边是类名或者对象名，右边是方法名或者关键字<code>new</code></strong></p>
 <p>首先被引用方法的返回值类型要和函数式接口抽象方法的返回值类型一致，至于参数列表要根据每种引用方式而定。</p>
+<a id="more"></a>
+
 <h1 id="1-静态方法引用"><a href="#1-静态方法引用" class="headerlink" title="1. 静态方法引用"></a>1. 静态方法引用</h1><p>语法：<code>ClassName::staticMethodName</code></p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Function&lt;String, Long&gt; f = x -&gt; Long.valueOf(x);</span><br><span class="line">Long result = f.apply(<span class="string">&quot;10&quot;</span>);</span><br></pre></td></tr></table></figure>
 <p>​    等价于：</p>
@@ -222,6 +223,15 @@
 
    
   <nav class="article-nav">
+    
+      <a href="/20190816/post/191434a07b67.html" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            消息中间件之ActiveMQ入门
+          
+        </div>
+      </a>
     
     
       <a href="/20190201/lambda1/c673d3a38bb1.html" class="article-nav-link">
