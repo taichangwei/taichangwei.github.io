@@ -109,10 +109,16 @@
        
   <h1 id="1-JMS与消息中间件"><a href="#1-JMS与消息中间件" class="headerlink" title="1. JMS与消息中间件"></a>1. JMS与消息中间件</h1><h2 id="1-1-jms介绍"><a href="#1-1-jms介绍" class="headerlink" title="1.1 jms介绍"></a>1.1 jms介绍</h2><p>jms是java消息服务接口规范，主要包含四大元素：<strong>生产者</strong>、<strong>消费者</strong>、<strong>消息</strong>、<strong>消息服务</strong>。  </p>
 <ul>
-<li>生产者：创建消息，并把消息发动到消息服务；  </li>
-<li>消费者：从消息服务接收消息；</li>
-<li>消息服务：即MQ消息服务（broker），而生产者与消费者相对其均为客服端；</li>
-<li>消息：整个消息服务的传输对象，消息包含消息头、消息属性、消息体；</li>
+<li><p>生产者：创建消息，并把消息发动到消息服务；  </p>
+</li>
+<li><p>消费者：从消息服务接收消息；</p>
+</li>
+<li><p>消息服务：即MQ消息服务（broker），而生产者与消费者相对其均为客服端；</p>
+</li>
+<li><p>消息：整个消息服务的传输对象，消息包含消息头、消息属性、消息体；</p>
+<a id="more"></a>
+
+</li>
 </ul>
 <blockquote>
 <p><strong>常用消息头属性</strong>：JMSDestination(消息目的地，如果生产者指定了目的地，在发送时会改为生产者绑定的目的地)、JMSDeliveryMode(是持久还是非持久)、JMSExpiration(过期时间，默认永久)、JMSPriority(优先级，0-9，数值越大优先级越高，默认为4)、JMSMessageId(唯一的消息ID)；<br><strong>消息属性</strong>：可视为消息头属性的扩展，通过setXxxProperty(k,v)设置；<br><strong>消息体</strong>：封装消息的具体数据，发送与接收的消息体类型必须一致，消息体类型总共有5种，TextMessage、Mapmessage、BytesMessage、StreamMessage、ObjectMessage；</p>
