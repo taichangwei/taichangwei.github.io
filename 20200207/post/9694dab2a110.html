@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+
+
+<head>
+  <meta charset="utf-8" />
+   
+  <meta name="keywords" content="java,博客,技术分享" />
+   
+  <meta name="description" content="分享学习心得，记录技术成长之路" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="google-site-verification" content="6PdDXp1HiBYOLkCarskqmK02dk0ftfxa7N1J-Em2fes" />
+  <meta name="baidu-site-verification" content="code-qU3aOUJvyN" />
+  <title>
+    Linux分区与挂载 |  飞
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+  
+  
+
+  
+
+<link rel="alternate" href="/atom.xml" title="飞" type="application/atom+xml">
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    
+      
+      <canvas width="1777" height="841"
+        style="position: fixed; left: 0px; top: 0px; z-index: 99999; pointer-events: none;"></canvas>
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-Linux分区与挂载"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Linux分区与挂载
+</h1>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/linux/">linux</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">4.2k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">15 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h2 id="1-Linux版本"><a href="#1-Linux版本" class="headerlink" title="1.Linux版本"></a>1.Linux版本</h2><p>Linux分为<strong>内核版</strong>和<strong>发行版</strong>，Linux内核其实就是一个操作系统最底层的核心及其提供的核心工具，仅有内核而没有应用软件的操作系统是无法使用的，为了让使用者能够接触到Linux，于是很多的商业公司或非营利团体，就将 Linux Kernel(含 tools)与可运行的软件整合起来，加上自己具有创意的工具程序，这个工具程序可以让用户以光盘/DVD 或者透过网络直接安装/管理 Linux 系统，这个『Kernel + Softwares + Tools + 可完全安装程序』的咚咚，我们称之为Linux发行版。</p>
+<a id="more"></a>
+
+<p>Linux发行版本根据软件包管理方式大致可以分为两类，<strong>RPM方式管理软件的系统</strong>(RedHat系列：RedHat、CentOS、OpenSuSe等)，<strong>DPKG方式管理软件的系统</strong>(Debian系列：Debian、Ubuntu等)</p>
+<h2 id="2-Linux分区与挂载"><a href="#2-Linux分区与挂载" class="headerlink" title="2.Linux分区与挂载"></a>2.Linux分区与挂载</h2><p>用于学习或者实验的话，一般采用虚拟机安装Linux操作系统即可，比较常用的虚拟机软件有VMware、VirtualBox，如果你的电脑是win10系统的话可以直接使用系统自带虚拟机软件Hyper-v，具体使用和安装过程这里不再详述可以自行参照网上教程，这里主要说一下Linux的分区与挂载。</p>
+<h3 id="2-1-分区方式"><a href="#2-1-分区方式" class="headerlink" title="2.1 分区方式"></a>2.1 分区方式</h3><p>常见的两种分区表现形式，<br><strong>MBR分区表</strong>：最大支持2.1T硬盘，最多支持4个分区，支持32位和64位系统；<br><strong>GPT分区表</strong>(全局唯一标示分区表)：支持9.4ZB(1ZB=1024PB, 1PB=1024EB, 1EB=1024TB)，理论上支持的分区数没有限制(但windows限制128个主分区)，只支持64位系统。<br>虽然GPT是一个较新的分区机制，解决了MBR很多缺点，但是目前使用最多的还是MBR分区方式。MBR最多有4个分区，分区类型有三种：</p>
+<ul>
+<li><strong>主分区</strong></li>
+<li><strong>扩展分区</strong><ul>
+<li>最多有一个</li>
+<li>扩展分区+主分区数最多不超过4个</li>
+<li>不能写入数据，不能格式化，只能用来包含逻辑分区</li>
+</ul>
+</li>
+<li><strong>逻辑分区</strong><ul>
+<li>包含在扩展分区内，可以有多个</li>
+<li>扩展分区至少要包含一个逻辑分区<h3 id="2-2-设备挂载"><a href="#2-2-设备挂载" class="headerlink" title="2.2 设备挂载"></a>2.2 设备挂载</h3>Linux中所有内容都是以文件的形式保存和管理的，硬件设备也是文件，这和Windows完全不同，windows是通过设备管理器来管理硬件的，linux的设备文件保存在<code>/dev/</code>目录中，比如硬盘文件是<code>/dev/sd[a-p]</code>，光盘文件是<code>/dev/hdc</code>等，硬件设备需要挂载到相应的目录文件才能使用。</li>
+</ul>
+</li>
+</ul>
+<p>所谓的<strong>挂载</strong>就是利用一个目录当成进入点，将磁盘分区的数据放置在该目录下，也就是说进入该目录就可以读取该分区的意思，这个动作我们称为<strong>挂载</strong>，那个进入点的目录我们称为<strong>挂载点</strong>。 由于整个 Linux 系统最重要的是根目录(<code>/</code>)，因此根目录一定需要挂载到某个分区， 至于其他的目录则可依用户自己的需求来给予挂载到不同的分区。</p>
+<p>常见的硬件设备文件名如下：</p>
+<table>
+<thead>
+<tr>
+<th>硬件</th>
+<th>设备名称</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>IDE硬盘</td>
+<td>/dev/hd[a-d]</td>
+</tr>
+<tr>
+<td>SCSI/SATA/USB硬盘</td>
+<td>/dev/sd[a-p]</td>
+</tr>
+<tr>
+<td>光驱</td>
+<td>/dev/cdrom或/dev/sr0</td>
+</tr>
+<tr>
+<td>软盘</td>
+<td>/dev/fd[01-1]</td>
+</tr>
+<tr>
+<td>打印机(25针)</td>
+<td>/dev/lp[0-2]</td>
+</tr>
+<tr>
+<td>打印机(USB)</td>
+<td>/dev/usb/lp[0-15]</td>
+</tr>
+<tr>
+<td>鼠标</td>
+<td>/dev/mouse</td>
+</tr>
+</tbody></table>
+<p>图示说明：<br><img src="https://taicw-blog.oss-cn-beijing.aliyuncs.com/202001/linux001.png?x-oss-process=style/watermarking" alt="linux设备挂载示意图"></p>
+<p>上图所示，硬盘被分为三个可用分区，其中sda1、sda2为主分区分别挂载在/boot和 / 目录下，sda3为扩展分区内部包含一个逻辑分区sda5，sda5挂载在/home目录下。/boot目录下的所有数据存储在sda1分区里，/home目录下的所有数据存储在sda5分区里，根目录 / (除了/boot、/home)下的数据都存储在sda2分区里。</p>
+<blockquote>
+<p>1.sda1表示第一块硬盘第一个分区，sda2表示第一块硬盘第二个分区，sdb1表示第二块硬盘一个分区，以此类推…<br>2.逻辑分区一定是从sda5开始，因为sda1、sda2、sda3和sda4文件名被主分区或扩展分区占用</p>
+</blockquote>
+<p>Linux系统安装时，一般分区如下：</p>
+<ul>
+<li>必须分区<ul>
+<li>/ （根分区）</li>
+<li>swap （交换分区）<ul>
+<li>如果真实内存小于4GB, swap为内存的两倍</li>
+<li>如果真实内存大于4GB, swap和内存一致</li>
+<li>实验环境，不大于2GB即可</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>推荐分区<ul>
+<li>/boot (启动分区，一般1GB，仅存放系统启动所需的数据)</li>
+</ul>
+</li>
+<li>常用分区<ul>
+<li>/home (用于文件服务器)</li>
+<li>/www (用于web服务器)<blockquote>
+<p>swap分区的文件系统类型式为swap，其余分区文件系统类型一般为ext4。一般系统安装存在 /、swap、/boot三个分区即可</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-3-挂载命令"><a href="#2-3-挂载命令" class="headerlink" title="2.3 挂载命令"></a>2.3 挂载命令</h3><ol>
+<li><strong>mount</strong> 或 <strong>mount -l</strong><ul>
+<li>查询系统中已挂载的设备，-l会显示卷标名称</li>
+</ul>
+</li>
+<li><strong>mount -a</strong><ul>
+<li>依据配置文件/etc/fstab的内容，自动挂载</li>
+</ul>
+</li>
+<li><strong>mount [-t 文件系统类型] [-L 卷标名] [-o 特殊选项] 设备文件名 挂载点</strong><ul>
+<li>手动挂载</li>
+<li>选项<ul>
+<li>-t 文件系统：加入文件系统类型来指定挂载的类型，可以是ext3、ext4、iso9660等文件系统 </li>
+<li>-L 卷标名：挂载指定卷标的分区，而不是安装设备文件名挂载</li>
+<li>-o 特殊选项: 可以指定挂载的额外选项，比如读写权限、同步异步等，如果不指定则默认值生效。具体的特殊选项见下表</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>umount 设备文件名</strong> 或 <strong>umount 挂载点</strong><ul>
+<li>卸载已挂载设备</li>
+<li>因为设备文件名和挂载点已经连接到一起，所以卸载哪一个都可以</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>补充（挂载特殊选项参数说明）：<br>| 特殊选项 | 说明 |<br>| — | — |<br>|atime/noatime | 更新访问时间/不更新访问时间。访问分区文件时，是否更新文件的访问时间，默认为更新|<br>|async/sync | 异步/同步，默认为异步|<br>|auto/noauto | 自动/手动，mount –a命令执行时，是否会自动安装/etc/fstab文件内容挂载，默认为自动|<br>|defaults|定义默认值，相当于 rw,suid,dev,exec,auto,nouser,async这七个选项|<br>|exec/noexec | 执行/不执行，设定是否允许在文件系统中执行可执行文件，默认是 exec允许|<br>|remount | 重新挂载已经挂载的文件系统，一般用于指定修改特殊权限。示例：<code>mount -o remount,noexec /boot</code> 重新挂载/boot分区并使用noexec权限|<br>|rw/ro|读写/只读，文件系统挂载时，是否具有读写权限，默认是 rw|<br>|suid/nosuid | 具有/不具有 SUID权限，设定文件系统是否具有 SUID和 SGID的权限，默认是具有|<br>|user/nouser | 允许/不允许普通用户挂载，设定文件系统是否允许普通用户挂载，默认不允许，只有root可以挂载分区|<br>|usrquota | 写入代表文件系统支持用户磁盘配额，默认不支持|<br>|grpquota | 写入代表文件系统支持组磁盘配额，默认不支持 |</p>
+</blockquote>
+<h3 id="2-4-LVM逻辑卷管理"><a href="#2-4-LVM逻辑卷管理" class="headerlink" title="2.4 LVM逻辑卷管理"></a>2.4 LVM逻辑卷管理</h3><h4 id="2-4-1-LVM简介"><a href="#2-4-1-LVM简介" class="headerlink" title="2.4.1 LVM简介"></a>2.4.1 LVM简介</h4><p>LVM是Logical Volume Manager的简称，中文就是逻辑卷管理。传统分区使用固定大小分区，重新调整大小十分麻烦。LVM将一个或多个硬盘的分区在逻辑上集合，相当于一个大硬盘来使用，当硬盘的空间不够使用的时候，可以继续将其它的硬盘的分区加入其中，这样可以实现磁盘空间的动态管理，相对于传统的磁盘分区有很大的灵活性。<br><img src="https://taicw-blog.oss-cn-beijing.aliyuncs.com/202001/linux002.png?x-oss-process=style/watermarking" alt="LVM示意图"></p>
+<ul>
+<li>**物理卷(PV, Physical Volume)**：就是真正的物理硬盘或分区</li>
+<li>**卷组(VG, Volume Group)**：将多个物理卷合起来就组成卷组，组成同一个卷组的物理卷可以是同一个硬盘的不同分区，也可以是不同硬盘的不同分区，可以把物理卷想象为一个逻辑硬盘。</li>
+<li>**逻辑卷(LV, Logival Volume)**：卷组是一个逻辑硬盘，硬盘必须分区之后才能使用，这个分区我们称作逻辑卷，逻辑卷可以格式化和写入数据。</li>
+</ul>
+<h4 id="2-4-2-建立LVM步骤"><a href="#2-4-2-建立LVM步骤" class="headerlink" title="2.4.2 建立LVM步骤"></a>2.4.2 建立LVM步骤</h4><ol>
+<li>使用<code>fdisk</code>交互命令把物理硬盘分成分区，当然也可以是整块硬盘。</li>
+<li>把物理分区建立成为物理卷(PV)，也可以把整块硬盘都建立为物理卷。<ul>
+<li>建立物理卷：<code>pvcreate [设备文件名]</code><ul>
+<li>把整块硬盘都建立成物理卷，命令为<code>pvcreate /dev/sdb</code>，即第二块硬盘整个都建立成物理卷；把分区建立成物理卷，命令为<code>pvcreate /dev/sdb5</code>，即第二块硬盘第五个分区建立成物理卷</li>
+</ul>
+</li>
+<li>查看物理卷：<code>pvscan</code> 或 <code>pvdisplay</code>(查看更加详细的物理卷状态)</li>
+<li>删除物理卷：<code>pvremove [物理卷名(建立物理卷时的设备文件名)]</code></li>
+</ul>
+</li>
+<li>把物理卷整合成为卷组(VG)。卷组就已经可以动态的调整大小了，可以把物理分区加入卷组，也可以把物理分区从卷组中删除。<ul>
+<li>建立卷组：<code>vgcreate [选项] 卷组名 物理卷名(多个空格隔开)</code><ul>
+<li>选项 ‘<code>-s PE大小</code>‘:指定PE(保存数据的最小单元)的大小，单位可以是MB、GB、TB等，如果不写默认PE大小是4MB。</li>
+<li>示例：<code>vgcreate -s 8MB scvg /dev/sdb5 /dev/sdb6</code>， 把物理卷/dev/sdb5、/dev/sdb6加入卷组scvg</li>
+</ul>
+</li>
+<li>查看卷组：<code>vgscan</code> 或 <code>vgdisplay</code></li>
+<li>扩充卷组容量：<code>vgextend 卷组名 物理卷名</code></li>
+<li>减小卷组容量：<code>vgreduce 卷组名 物理卷名</code></li>
+<li>删除卷组：<code>vgremove 卷组名</code><ul>
+<li>卷组如果已经添加了逻辑卷，要先删除逻辑卷才能删除卷组，卷组删除后才能删除物理卷</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>把卷组再划分为逻辑卷(LV)，当然逻辑卷也是可以直接调整大小的。逻辑卷可以想象成分区，所以也需要格式化和挂载。</li>
+</ol>
+<ul>
+<li>建立逻辑卷：<code>lvcreate [选项] [-n 逻辑卷名] 卷组名</code></li>
+<li>选项<ul>
+<li><code>-L 容量</code>：指定逻辑卷大小，单位MB、GB、TB</li>
+<li><code>-l 个数</code>：按照PE个数指定逻辑卷大小，这个参数需要换算容量</li>
+<li><code>-n 逻辑卷名</code>：指定逻辑卷名</li>
+</ul>
+</li>
+<li>示例：<code>lvcreate -L 2GB -n userlv scvg</code>，在卷组scvg中建立一个容量2GB名称为userlv的逻辑卷</li>
+<li>建立完逻辑卷之后，还要格式化和挂载之后逻辑卷才能正常使用。格式化和挂载命令和操作普通分区时一样，不过需要注意的是逻辑卷的设备文件名是“**/dev/卷组名/逻辑卷名**”，比如示例这里建立的逻辑卷设备文件名是<code>/dev/scvg/userlv</code><ul>
+<li>格式化逻辑卷：<code>mkfs -t ext4 /dev/scvg/userlv</code></li>
+<li>创建挂载目录：<code>mkdir /disklvm</code></li>
+<li>挂载逻辑卷：<code>mount /dev/scvg/userlv /disklvm/</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="3-目录结及说明"><a href="#3-目录结及说明" class="headerlink" title="3.目录结及说明"></a>3.目录结及说明</h2><p>Linux目录结构及说明如下</p>
+<table>
+<thead>
+<tr>
+<th>目录名</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>/bin/</td>
+<td>bin是Binary的缩写, 这个目录存放着最经常使用的命令</td>
+</tr>
+<tr>
+<td>/sbin/</td>
+<td>s就是Super User的意思，这里存放的是系统管理员使用的系统管理程序</td>
+</tr>
+<tr>
+<td>/usr/bin/</td>
+<td>系统用户使用的应用程序</td>
+</tr>
+<tr>
+<td>/usr/sbin/</td>
+<td>超级用户使用的比较高级的管理程序和系统守护程序</td>
+</tr>
+<tr>
+<td>/boot/</td>
+<td>系统启动目录，保存于系统启动相关的文件，如内核文件和启动引导程序（grup）文件等</td>
+</tr>
+<tr>
+<td>/dev/</td>
+<td>设备文件保存位置</td>
+</tr>
+<tr>
+<td>/etc/</td>
+<td>配置文件保存位置。系统内所有采用默认安装方式（rpm安装）的服务配置文件全部保存在此目录，如用户信息、服务的启动脚本、常用服务的配置文件等</td>
+</tr>
+<tr>
+<td>/home/</td>
+<td>普通用户的家目录。在创建用户时，每个用户要有一个默认登录和保存自己数据的位置，就是用户的家目录，所有普通用户的宿主目录是在/home/下建立一个和用户名相同的目录。如用户user1的家目录就是/home/user1/</td>
+</tr>
+<tr>
+<td>/lib/</td>
+<td>这个目录里存放着系统最基本的动态连接共享库，其作用类似于Windows里的DLL文件。几乎所有的应用程序都需要用到这些共享库</td>
+</tr>
+<tr>
+<td>/lib64/</td>
+<td>64位函数库保存位置</td>
+</tr>
+<tr>
+<td>/lost+found/</td>
+<td>当系统意外崩溃或机器意外关机，而产生一些文件碎片放在这里。当系统启动的过程中fsck工具会检查这里，并修复已经损坏的文件系统。这个目录只在每个分区中出现，例如/lost+found就是根分区的备份恢复目录，/boot/lost+found就是/boot分区的备份恢复目录</td>
+</tr>
+<tr>
+<td>/media/</td>
+<td>挂载目录。系统建议是用来挂载媒体设备的，如软盘和光盘</td>
+</tr>
+<tr>
+<td>/misc/</td>
+<td>挂载目录。系统建议用来挂载NFS服务的共享目录</td>
+</tr>
+<tr>
+<td>/mnt/</td>
+<td>挂载目录。早期Linux只有这一个挂载目录，并没有细分，现在系统建议这个目录用来挂载额外的设备，如U盘、移动硬盘等。虽然有三个默认的挂载目录/media/、/misc/、/mnt/，但是到底使用哪个目录挂载什么设备都可以由管理员自己决定。一般习惯挂载目录只用一个/mnt/, 在/mnt/目录下建立不同的目录挂载不同的设备，如/mnt/cdrom挂载光盘、/mnt/usb挂载U盘</td>
+</tr>
+<tr>
+<td>/opt/</td>
+<td>第三方安装的软件保存位置。这个目录是放置和安装其他软件的位置，手工安装的源码包软件都可以安装到这个目录中。一般习惯把软件放到/usr/local/目录中，也就是说/usr/local/目录也可以用来安装软件</td>
+</tr>
+<tr>
+<td>/proc/</td>
+<td>虚拟文件系统。改目录中的数据并不保存在硬盘上，而是保存到内存中。主要保存系统的内核、进程、外部设备状态和网络状态等。如/proc/cpuinfo是保存CPU信息的，/proc/devices是保存设备驱动的列表的，/proc/filesystems是保存文件系统列表的，/proc/net 是保存网络协议信息的</td>
+</tr>
+<tr>
+<td>/sys/</td>
+<td>虚拟文件系统。和/proc/目录相似，该目录中的数据都保存在内存中，主要保存与内核相关的信息</td>
+</tr>
+<tr>
+<td>/root/</td>
+<td>root用户的宿主目录。普通用户宿主目录在/home/下，root宿主目录直接在 / 下</td>
+</tr>
+<tr>
+<td>/run/</td>
+<td>系统运行时产生的数据，如ssid, pid等相关数据。</td>
+</tr>
+<tr>
+<td>/srv/</td>
+<td>服务数据目录。一些系统服务启动之后，可以在这个目录中保存所需要的数据</td>
+</tr>
+<tr>
+<td>/tmp/</td>
+<td>临时目录。系统存放历史文件的目录，在该目录下，所有用户都可以访问和写入。建议此目录不要保存重要数据，最好每次开机把该目录清空</td>
+</tr>
+<tr>
+<td>/usr/</td>
+<td>系统软件资源目录。注意usr不是user的缩写，而是”UNIX Software Resource”的缩写，所以不是存放用户数据的目录，而是存放系统软件资源的目录。系统中安装的软件大多数保存在这里</td>
+</tr>
+<tr>
+<td>/usr/lib/</td>
+<td>应用程序调用的函数库保存位置</td>
+</tr>
+<tr>
+<td>/usr/local/</td>
+<td>手工安装的软件保存位置。一般建议源码包软件安装在这个位置</td>
+</tr>
+<tr>
+<td>/usr/share/</td>
+<td>应用程序的资源文件保存位置，如帮助文档、说明文档和字体目录</td>
+</tr>
+<tr>
+<td>/usr/src/</td>
+<td>源码包保存位置。手工下载的源码包和内核源码包都可以保存到这里。一般习惯把手工下载的源码包保存到/usr/local/src/目录中，把内核源码保存到/usr/src/kernels/目录中</td>
+</tr>
+<tr>
+<td>/usr/src/kernels/</td>
+<td>内核源码保存位置</td>
+</tr>
+<tr>
+<td>/var/</td>
+<td>动态数据保存位置。只要保存缓存、日志以及软件运行所产生的文件</td>
+</tr>
+<tr>
+<td>/var/www/html/</td>
+<td>RPM包安装Apache的网页主目录</td>
+</tr>
+<tr>
+<td>/var/lib/</td>
+<td>程序运行中需要调用和改变的数据保存位置。如mysql的数据库保存在/var/lib/mysql/目录中</td>
+</tr>
+<tr>
+<td>/var/log/</td>
+<td>系统日志保存位置</td>
+</tr>
+<tr>
+<td>/var/run/</td>
+<td>一些服务和程序运行后，它们的PID(进程ID)保存位置。是/run/目录的软链接</td>
+</tr>
+<tr>
+<td>/var/spool/</td>
+<td>放置队列数据的目录。就是排队等待其他程序使用的数据，比如邮件队列和打印队列</td>
+</tr>
+<tr>
+<td>/var/spool/mail/</td>
+<td>新收到的邮件队列保存位置。系统新收到的邮件会保存在此目录</td>
+</tr>
+<tr>
+<td>/var/spool/cron/</td>
+<td>系统的定时任务队列保存位置。系统的计划任务会保存在这里</td>
+</tr>
+</tbody></table>
+ 
+      <!-- reward -->
+      
+      <div id="reword-out">
+        <div id="reward-btn">
+          打赏
+        </div>
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          
+          本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://blog.taichangwei.com/20200207/post/9694dab2a110.html" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/linux/" rel="tag">linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%88%86%E5%8C%BA/" rel="tag">分区</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%8C%82%E8%BD%BD/" rel="tag">挂载</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84/" rel="tag">目录结构</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/20200501/jvmParamType/218e2c7235be.html" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            JVM参数类型
+          
+        </div>
+      </a>
+    
+    
+      <a href="/20190816/post/191434a07b67.html" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">消息中间件之ActiveMQ入门</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "E5OOqIsMNkJ1drMqHgC0Pb2R-gzGzoHsz",
+    app_key: "j5iMiXclL4PzAvAKYj50aulE",
+    path: window.location.pathname,
+    avatar: "monsterid",
+    placeholder: "给我的文章加点评论吧~",
+    recordIP: true,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2019-2020
+        <i class="ri-heart-fill heart_icon"></i> taichangwei
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        由 <a href="https://hexo.io" target="_blank">Hexo</a> 强力驱动
+        <span class="division">|</span>
+        主题 - <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></s>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://v1.cnzz.com/z_stat.php?id=1279456387&amp;web_id=1279456387'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side1.png" alt="飞"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/friends">友链</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://taicw-blog.oss-cn-beijing.aliyuncs.com/common/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://taicw-blog.oss-cn-beijing.aliyuncs.com/common/weichatpay.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+
+<script src="/js/clickBoom2.js"></script>
+
+
+<!-- CodeCopy -->
+
+
+<link rel="stylesheet" href="/css/clipboard.css">
+
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+<!-- CanvasBackground -->
+
+
+<script src="/js/dz.js"></script>
+
+
+
+    
+  </div>
+</body>
+
+</html>
