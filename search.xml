@@ -97,10 +97,11 @@
 </li>
 <li><strong>逻辑分区</strong><ul>
 <li>包含在扩展分区内，可以有多个</li>
-<li>扩展分区至少要包含一个逻辑分区<h3 id="2-2-设备挂载"><a href="#2-2-设备挂载" class="headerlink" title="2.2 设备挂载"></a>2.2 设备挂载</h3>Linux中所有内容都是以文件的形式保存和管理的，硬件设备也是文件，这和Windows完全不同，windows是通过设备管理器来管理硬件的，linux的设备文件保存在<code>/dev/</code>目录中，比如硬盘文件是<code>/dev/sd[a-p]</code>，光盘文件是<code>/dev/hdc</code>等，硬件设备需要挂载到相应的目录文件才能使用。</li>
+<li>扩展分区至少要包含一个逻辑分区</li>
 </ul>
 </li>
 </ul>
+<h3 id="2-2-设备挂载"><a href="#2-2-设备挂载" class="headerlink" title="2.2 设备挂载"></a>2.2 设备挂载</h3><p>Linux中所有内容都是以文件的形式保存和管理的，硬件设备也是文件，这和Windows完全不同，windows是通过设备管理器来管理硬件的，linux的设备文件保存在<code>/dev/</code>目录中，比如硬盘文件是<code>/dev/sd[a-p]</code>，光盘文件是<code>/dev/hdc</code>等，硬件设备需要挂载到相应的目录文件才能使用。</p>
 <p>所谓的<strong>挂载</strong>就是利用一个目录当成进入点，将磁盘分区的数据放置在该目录下，也就是说进入该目录就可以读取该分区的意思，这个动作我们称为<strong>挂载</strong>，那个进入点的目录我们称为<strong>挂载点</strong>。 由于整个 Linux 系统最重要的是根目录(<code>/</code>)，因此根目录一定需要挂载到某个分区， 至于其他的目录则可依用户自己的需求来给予挂载到不同的分区。</p>
 <p>常见的硬件设备文件名如下：</p>
 <table>
