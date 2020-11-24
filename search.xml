@@ -80,7 +80,7 @@
   </entry>
   <entry>
     <title>Linux分区与挂载</title>
-    <url>/20200207/post/9694dab2a110.html</url>
+    <url>/20200207/linux1/9694dab2a110.html</url>
     <content><![CDATA[<h2 id="1-Linux版本"><a href="#1-Linux版本" class="headerlink" title="1.Linux版本"></a>1.Linux版本</h2><p>Linux分为<strong>内核版</strong>和<strong>发行版</strong>，Linux内核其实就是一个操作系统最底层的核心及其提供的核心工具，仅有内核而没有应用软件的操作系统是无法使用的，为了让使用者能够接触到Linux，于是很多的商业公司或非营利团体，就将 Linux Kernel(含 tools)与可运行的软件整合起来，加上自己具有创意的工具程序，这个工具程序可以让用户以光盘/DVD 或者透过网络直接安装/管理 Linux 系统，这个『Kernel + Softwares + Tools + 可完全安装程序』的咚咚，我们称之为Linux发行版。</p>
 <a id="more"></a>
 
