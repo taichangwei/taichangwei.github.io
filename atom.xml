@@ -41,6 +41,31 @@
   </entry>
   
   <entry>
+    <title>Linux常用命令</title>
+    <link href="https://blog.taichangwei.com/20200228/linux2/20f52a23110c.html"/>
+    <id>https://blog.taichangwei.com/20200228/linux2/20f52a23110c.html</id>
+    <published>2020-02-28T14:18:59.000Z</published>
+    <updated>2020-11-25T14:26:11.803Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;1-命令的基本格式&quot;&gt;&lt;a href=&quot;#1-命令的基本格式&quot; class=&quot;headerlink&quot; title=&quot;1 命令的基本格式&quot;&gt;&lt;/a&gt;1 命令的基本格式&lt;/h2&gt;&lt;h3 id=&quot;1-1-命令的提示符&quot;&gt;&lt;a href=&quot;#1-1-命令的提示符&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="linux" scheme="https://blog.taichangwei.com/categories/linux/"/>
+    
+    
+    <category term="命令" scheme="https://blog.taichangwei.com/tags/%E5%91%BD%E4%BB%A4/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Linux分区与挂载</title>
     <link href="https://blog.taichangwei.com/20200207/linux1/9694dab2a110.html"/>
     <id>https://blog.taichangwei.com/20200207/linux1/9694dab2a110.html</id>
@@ -66,11 +91,37 @@
   </entry>
   
   <entry>
+    <title>MySQL报only_full_group_by错误</title>
+    <link href="https://blog.taichangwei.com/20190824/informal001/5ed6d48e6e64.html"/>
+    <id>https://blog.taichangwei.com/20190824/informal001/5ed6d48e6e64.html</id>
+    <published>2019-08-24T14:54:54.000Z</published>
+    <updated>2020-11-24T15:27:46.237Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;之前执行正常的一条分组sql语句，今天在本地执行时突然报错了，报错信息如下：&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span</summary>
+        
+      
+    
+    
+    
+    <category term="随笔" scheme="https://blog.taichangwei.com/categories/%E9%9A%8F%E7%AC%94/"/>
+    
+    
+    <category term="bug" scheme="https://blog.taichangwei.com/tags/bug/"/>
+    
+  </entry>
+  
+  <entry>
     <title>消息中间件之ActiveMQ入门</title>
     <link href="https://blog.taichangwei.com/20190816/post/191434a07b67.html"/>
     <id>https://blog.taichangwei.com/20190816/post/191434a07b67.html</id>
     <published>2019-08-16T14:51:16.000Z</published>
-    <updated>2020-11-23T15:39:15.464Z</updated>
+    <updated>2020-11-25T14:14:51.410Z</updated>
     
     
     <summary type="html">&lt;h1 id=&quot;1-JMS与消息中间件&quot;&gt;&lt;a href=&quot;#1-JMS与消息中间件&quot; class=&quot;headerlink&quot; title=&quot;1. JMS与消息中间件&quot;&gt;&lt;/a&gt;1. JMS与消息中间件&lt;/h1&gt;&lt;h2 id=&quot;1-1-jms介绍&quot;&gt;&lt;a href=&quot;#1-1-jms介绍&quot; class=&quot;headerlink&quot; title=&quot;1.1 jms介绍&quot;&gt;&lt;/a&gt;1.1 jms介绍&lt;/h2&gt;&lt;p&gt;jms是java消息服务接口规范，主要包含四大元素：&lt;strong&gt;生产者&lt;/strong&gt;、&lt;strong&gt;消费者&lt;/strong&gt;、&lt;strong&gt;消息&lt;/strong&gt;、&lt;strong&gt;消息服务&lt;/strong&gt;。  &lt;/p&gt;
