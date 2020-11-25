@@ -45,16 +45,18 @@
     <link href="https://blog.taichangwei.com/20200228/linux2/20f52a23110c.html"/>
     <id>https://blog.taichangwei.com/20200228/linux2/20f52a23110c.html</id>
     <published>2020-02-28T14:18:59.000Z</published>
-    <updated>2020-11-25T14:26:11.803Z</updated>
+    <updated>2020-11-25T14:42:54.905Z</updated>
     
     
-      
-      
-        
-        
-    <summary type="html">&lt;h2 id=&quot;1-命令的基本格式&quot;&gt;&lt;a href=&quot;#1-命令的基本格式&quot; class=&quot;headerlink&quot; title=&quot;1 命令的基本格式&quot;&gt;&lt;/a&gt;1 命令的基本格式&lt;/h2&gt;&lt;h3 id=&quot;1-1-命令的提示符&quot;&gt;&lt;a href=&quot;#1-1-命令的提示符&quot;</summary>
-        
-      
+    <summary type="html">&lt;h2 id=&quot;1-命令的基本格式&quot;&gt;&lt;a href=&quot;#1-命令的基本格式&quot; class=&quot;headerlink&quot; title=&quot;1 命令的基本格式&quot;&gt;&lt;/a&gt;1 命令的基本格式&lt;/h2&gt;&lt;h3 id=&quot;1-1-命令的提示符&quot;&gt;&lt;a href=&quot;#1-1-命令的提示符&quot; class=&quot;headerlink&quot; title=&quot;1.1 命令的提示符&quot;&gt;&lt;/a&gt;1.1 命令的提示符&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;[root@localhost ~]#&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;[]&lt;/code&gt;：这是提示符的分隔符号，没有特殊含义。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;root&lt;/code&gt;：显示的是当前的登录用户， 目前使用的是root用户登录。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;@&lt;/code&gt;：分隔符号，没有特殊含义。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;localhost&lt;/code&gt;：当前系统的简写主机名（完整主机名是 localhost.localdomain）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;~&lt;/code&gt;：代表用户当前所在的目录，此例中用户当前所在的目录是家目录。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;#&lt;/code&gt;：命令提示符。超级用户是#，普通用户是$&lt;/li&gt;
+&lt;/ul&gt;</summary>
     
     
     
@@ -87,6 +89,26 @@
     <category term="挂载" scheme="https://blog.taichangwei.com/tags/%E6%8C%82%E8%BD%BD/"/>
     
     <category term="目录结构" scheme="https://blog.taichangwei.com/tags/%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>MySQL报only_full_group_by错误</title>
+    <link href="https://blog.taichangwei.com/20190824/informal001/5ed6d48e6e64.html"/>
+    <id>https://blog.taichangwei.com/20190824/informal001/5ed6d48e6e64.html</id>
+    <published>2019-08-24T14:54:54.000Z</published>
+    <updated>2020-11-25T16:24:48.668Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;之前执行正常的一条分组sql语句，今天在本地执行时突然报错了，报错信息如下：&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;[Err] 1055 - Expression #1 of ORDER BY clause is not in GROUP BY clause and contains nonaggregated column list which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode&amp;#x3D;only_full_group_by&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
+    
+    
+    
+    <category term="随笔" scheme="https://blog.taichangwei.com/categories/%E9%9A%8F%E7%AC%94/"/>
+    
+    
+    <category term="bug" scheme="https://blog.taichangwei.com/tags/bug/"/>
     
   </entry>
   
