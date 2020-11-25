@@ -1664,42 +1664,6 @@
       </tags>
   </entry>
   <entry>
-    <title>MySQL报only_full_group_by错误</title>
-    <url>/20190824/informal001/5ed6d48e6e64.html</url>
-    <content><![CDATA[<p>之前执行正常的一条分组sql语句，今天在本地执行时突然报错了，报错信息如下：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[Err] 1055 - Expression #1 of ORDER BY clause is not in GROUP BY clause and contains nonaggregated column list which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode&#x3D;only_full_group_by</span><br></pre></td></tr></table></figure>
-
-<p>网上搜索了一番很快就找到了答案，就顺便做一下记录。原来是和 mysql 的版本有关，</p>
-<p>在把MySQL升级到5.7或者更高的版本，一些以前看上去不会出错的group by 操作在这个版本以后就会出现语法报错的情况：</p>
-<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line">[Err] <span class="number">1055</span> - Expression #<span class="number">1</span> of ORDER BY clause <span class="keyword">is</span> not <span class="keyword">in</span> GROUP BY clause and contains nonaggregated column list which <span class="keyword">is</span> not functionally dependent <span class="keyword">on</span> columns <span class="keyword">in</span> GROUP BY clause; <span class="keyword">this</span> <span class="keyword">is</span> incompatible <span class="keyword">with</span> sql_mode=only_full_group_by</span><br></pre></td></tr></table></figure>
-
-<p>在这个模式下，我们使用分组查询时，出现在select字段后面的只能是group by后面的分组字段，或使用聚合函数包裹着的字段。</p>
-<p>网上一般的解决方式就是关掉这个模式，即：</p>
-<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line"><span class="keyword">set</span> @<span class="meta">@GLOBAL</span>.sql_mode=’’;</span><br><span class="line"><span class="keyword">set</span> sql_mode =‘STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION’;</span><br></pre></td></tr></table></figure>
-
-<p>或者改my.ini 配置（如果Mysql 没有这个文件，就把my-default.ini 改成my.ini）<br> 在 [mysqld]和[mysql]下添加</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sql_mode &#x3D;‘STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION’;</span><br></pre></td></tr></table></figure>
-
-<p>看上去这种模式的出现完全是画蛇添足。事实上MySQL更新这种模式不是没有意义的：对于语义限制都比较严谨的多家数据库，如SQLServer、Oracled等数据库都不支持select target list中出现语义不明确的列，这样的语句在这些数据库中是会被报错的，所以从MySQL 5.7版本开始修正了这个语义，就是所说的ONLY_FULL_GROUP_BY语义。<br> 在我遇到这种报错的情况中，最多的就是分组求最值，例如：</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> id,ename,max(sal) <span class="keyword">from</span> e <span class="keyword">group</span> <span class="keyword">by</span> id;</span><br></pre></td></tr></table></figure>
-
-<p>求各部门最高的工资，其中：id:部门,ename:名字,sal:工资。<br> 或者是这种投机的表示方式：</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> id,ename,sal <span class="keyword">from</span></span><br><span class="line">   ( <span class="keyword">select</span> * <span class="keyword">from</span> e order <span class="keyword">by</span> sal desc ) t <span class="keyword">group</span> <span class="keyword">by</span> id;</span><br></pre></td></tr></table></figure>
-
-<p>而之后的版本不再支持了，原因个人认为是消除了子查询的排序作用。而且官方也支持这个判断：（<a href="https://links.jianshu.com/go?to=https://bugs.mysql.com/bug.php?id=80131">https://bugs.mysql.com/bug.php?id=80131</a>）<br> 如果在不关闭only_full_group_by模式的条件下，是否有速度类似同时又符合规则的办法呢？<br> 答案是存在的：</p>
-<figure class="highlight csharp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> id ,ename,sal <span class="keyword">from</span></span><br><span class="line">           e, (<span class="keyword">select</span> id ,max(sal) <span class="keyword">as</span> maxsal <span class="keyword">from</span> e <span class="keyword">group</span> <span class="keyword">by</span> id ) <span class="keyword">as</span> t  </span><br><span class="line">           <span class="keyword">where</span> e.id = t.id <span class="keyword">and</span> e.sal = t.maxsal;</span><br></pre></td></tr></table></figure>
-
-<p>不需要用到构造两表联查，性能也很好。</p>
-<p>作者：Vivus<br>链接：<a href="https://www.jianshu.com/p/7f532985ff39">https://www.jianshu.com/p/7f532985ff39</a><br>来源：简书<br>著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</p>
-]]></content>
-      <categories>
-        <category>随笔</category>
-      </categories>
-      <tags>
-        <tag>bug</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>消息中间件之ActiveMQ入门</title>
     <url>/20190816/post/191434a07b67.html</url>
     <content><![CDATA[<h1 id="1-JMS与消息中间件"><a href="#1-JMS与消息中间件" class="headerlink" title="1. JMS与消息中间件"></a>1. JMS与消息中间件</h1><h2 id="1-1-jms介绍"><a href="#1-1-jms介绍" class="headerlink" title="1.1 jms介绍"></a>1.1 jms介绍</h2><p>jms是java消息服务接口规范，主要包含四大元素：<strong>生产者</strong>、<strong>消费者</strong>、<strong>消息</strong>、<strong>消息服务</strong>。  </p>
