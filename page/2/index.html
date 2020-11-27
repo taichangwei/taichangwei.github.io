@@ -15,7 +15,7 @@
   <meta name="google-site-verification" content="6PdDXp1HiBYOLkCarskqmK02dk0ftfxa7N1J-Em2fes" />
   <meta name="baidu-site-verification" content="code-qU3aOUJvyN" />
   <title>
-    linux |  飞
+     飞
   </title>
   <meta name="generator" content="hexo-theme-ayer">
   
@@ -48,140 +48,402 @@
         style="position: fixed; left: 0px; top: 0px; z-index: 99999; pointer-events: none;"></canvas>
       
     <main class="content on">
-      <section class="outer">
+      
+<section class="cover">
+    
+  <div class="cover-frame">
+    <div class="bg-box">
+      <img src="https://taicw-blog.oss-cn-beijing.aliyuncs.com/common/blog-cover8.jpg" alt="image frame" />
+    </div>
+    <div class="cover-inner text-center text-white">
+      <h1><a href="/">飞</a></h1>
+      <div id="subtitle-box">
+        
+        <span id="subtitle"></span>
+        
+      </div>
+      <div>
+        
+      </div>
+    </div>
+  </div>
+  <div class="cover-learn-more">
+    <a href="javascript:void(0)" class="anchor"><i class="ri-arrow-down-line"></i></a>
+  </div>
+</section>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js"></script>
+
+
+<!-- Subtitle -->
+
+  <script>
+    try {
+      var typed = new Typed("#subtitle", {
+        strings: ['想要征服天空，你需要的不是一双翅膀，而是一个想飞的梦。', '逆风的方向，更适合飞翔，不怕千万人阻挡，怕的是自己投降。', '我曾经说过我想要飞翔，可是那都只是遥远的梦想，现实折断了我的翅膀，我走在现实为我铺好的路上，那是离开童话的地方。'],
+        startDelay: 0,
+        typeSpeed: 200,
+        loop: true,
+        backSpeed: 50,
+        showCursor: true
+      });
+    } catch (err) {
+      console.log(err)
+    }
+  </script>
+  
+<div id="main">
+  <section class="outer">
+  
+  
+
+<div class="notice" style="margin-top:50px">
+    <i class="ri-heart-fill"></i>
+    <div class="notice-content" id="broad"></div>
+</div>
+<script type="text/javascript">
+    fetch('https://v1.hitokoto.cn')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("broad").innerHTML = data.hitokoto + '  ——' + data.from;
+        })
+        .catch(console.error)
+</script>
+
+<style>
+    .notice {
+        padding: 20px;
+        border: 1px dashed #e6e6e6;
+        color: #969696;
+        position: relative;
+        display: inline-block;
+        width: 100%;
+        background: #fbfbfb50;
+        border-radius: 10px;
+    }
+
+    .notice i {
+        float: left;
+        color: #999;
+        font-size: 16px;
+        padding-right: 10px;
+        vertical-align: middle;
+        margin-top: -2px;
+    }
+
+    .notice-content {
+        display: initial;
+        vertical-align: middle;
+    }
+</style>
   
   <article class="articles">
     
     
-    <h1 class="page-type-title">linux</h1>
     
     
-  
-  
-  
-  
-  
-  
-  <div class="archives-wrap">
-    <div class="archive-year-wrap">
-      <a href="/archives/2020" class="archive-year">2020</a>
+    <article
+  id="post-MySQL报only-full-group-by错误"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/20190824/informal001/5ed6d48e6e64.html"
+    >MySQL报only_full_group_by错误</a> 
+</h2>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E9%9A%8F%E7%AC%94/">随笔</a>
+  </div>
+   
     </div>
-    <div class="archives">
       
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/20200308/linux4/3c087d2cbe86.html" class="archive-article-date">
-  <time datetime="2020-03-07T23:33:39.000Z" itemprop="datePublished">03/08</time>
-</a>
+    <div class="article-entry" itemprop="articleBody">
        
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/20200308/linux4/3c087d2cbe86.html"
-    >Linux软件安装归纳</a> 
-</h2>
- 
-
-    </header>
-    
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/linux/">linux</a>
-  </div>
-
-    
-    
-  </div>
-</article>
-      
-  
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/20200305/linux3/79cf394d63e3.html" class="archive-article-date">
-  <time datetime="2020-03-04T23:13:33.000Z" itemprop="datePublished">03/05</time>
-</a>
+  <p>之前执行正常的一条分组sql语句，今天在本地执行时突然报错了，报错信息如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Err] 1055 - Expression #1 of ORDER BY clause is not in GROUP BY clause and contains nonaggregated column list which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode&#x3D;only_full_group_by</span><br></pre></td></tr></table></figure> 
+      <a class="article-more-link" href="/20190824/informal001/5ed6d48e6e64.html"
+        >阅读更多...</a
+      >
        
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/20200305/linux3/79cf394d63e3.html"
-    >wget与curl 命令详解</a> 
-</h2>
- 
-
-    </header>
-    
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/linux/">linux</a>
-  </div>
-
-    
-    
-  </div>
-</article>
-      
-  
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/20200228/linux2/20f52a23110c.html" class="archive-article-date">
-  <time datetime="2020-02-28T14:18:59.000Z" itemprop="datePublished">02/28</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/20200228/linux2/20f52a23110c.html"
-    >Linux常用命令</a> 
-</h2>
- 
-
-    </header>
-    
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/linux/">linux</a>
-  </div>
-
-    
-    
-  </div>
-</article>
-      
-  
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/20200207/linux1/9694dab2a110.html" class="archive-article-date">
-  <time datetime="2020-02-07T13:47:33.000Z" itemprop="datePublished">02/07</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/20200207/linux1/9694dab2a110.html"
-    >Linux分区与挂载</a> 
-</h2>
- 
-
-    </header>
-    
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/linux/">linux</a>
-  </div>
-
-    
-    
-  </div>
-</article>
-      
+      <!-- reward -->
       
     </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/bug/" rel="tag">bug</a></li></ul>
+
+    </footer>
   </div>
-  
+
+    
+ 
+   
+</article>
+
+    
+    <article
+  id="post-消息中间件之ActiveMQ入门"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/20190816/post/191434a07b67.html"
+    >消息中间件之ActiveMQ入门</a> 
+</h2>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6/">消息中间件</a>
+  </div>
+   
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="1-JMS与消息中间件"><a href="#1-JMS与消息中间件" class="headerlink" title="1. JMS与消息中间件"></a>1. JMS与消息中间件</h1><h2 id="1-1-jms介绍"><a href="#1-1-jms介绍" class="headerlink" title="1.1 jms介绍"></a>1.1 jms介绍</h2><p>jms是java消息服务接口规范，主要包含四大元素：<strong>生产者</strong>、<strong>消费者</strong>、<strong>消息</strong>、<strong>消息服务</strong>。  </p>
+<ul>
+<li><p>生产者：创建消息，并把消息发动到消息服务；  </p>
+</li>
+<li><p>消费者：从消息服务接收消息；</p>
+</li>
+<li><p>消息服务：即MQ消息服务（broker），而生产者与消费者相对其均为客服端；</p>
+</li>
+<li><p>消息：整个消息服务的传输对象，消息包含消息头、消息属性、消息体；</p> 
+      <a class="article-more-link" href="/20190816/post/191434a07b67.html"
+        >阅读更多...</a
+      >
+       
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/activeMQ/" rel="tag">activeMQ</a></li></ul>
+
+    </footer>
+  </div>
+
+    
+ 
+   
+</article>
+
+    
+    <article
+  id="post-lambda表达式（二）——方法引用"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/20190202/lambda2/076a298db052.html"
+    >lambda表达式（二）——方法引用</a> 
+</h2>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/lambda/">lambda</a>
+  </div>
+   
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <p>当我们在使用lambda去表示某个函数式接口的实例时，需要在lambda表达式的主体里去编写函数式接口抽象方法的实现，如果在现有的类中已经存在与抽象方法类似的方法了，我们希望直接引用现有的方法，而不用再去重新写实现了。方法引用让你可以重复使用现有的方法定义，并像Lambda一样传递它们。</p>
+<p>方法引用和lambda表达式拥有相同的特性，它们都需要代表一个<strong>目标类型</strong>，并需要被转化为函数式接口的实例，不过我们并不需要为方法引用提供方法体，我们可以直接通过方法名称引用已有方法方。<strong>法引用要使用到操作符 “::”，左边是类名或者对象名，右边是方法名或者关键字<code>new</code></strong></p>
+<p>首先被引用方法的返回值类型要和函数式接口抽象方法的返回值类型一致，至于参数列表要根据每种引用方式而定。</p> 
+      <a class="article-more-link" href="/20190202/lambda2/076a298db052.html"
+        >阅读更多...</a
+      >
+       
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+
+    </footer>
+  </div>
+
+    
+ 
+   
+</article>
+
+    
+    <article
+  id="post-lambda表达式（一）——函数式接口"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/20190201/lambda1/c673d3a38bb1.html"
+    >lambda表达式（一）——函数式接口</a> 
+</h2>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/lambda/">lambda</a>
+  </div>
+   
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h2 id="1-什么是lambda"><a href="#1-什么是lambda" class="headerlink" title="1.什么是lambda?"></a>1.什么是lambda?</h2><p>如果我们想要起一个线程来打印一串字符串，我们之前的写法通常是这样：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">ExecutorService executorService = Executors.newFixedThreadPool(<span class="number">3</span>);</span><br><span class="line">executorService.execute(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;hello world!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line">executorService.shutdown();</span><br></pre></td></tr></table></figure>
+<p>使用lambda表达式后，可以改写为这个样：</p> 
+      <a class="article-more-link" href="/20190201/lambda1/c673d3a38bb1.html"
+        >阅读更多...</a
+      >
+       
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+
+    </footer>
+  </div>
+
+    
+ 
+   
+</article>
+
+    
+    <article
+  id="post-反射基础运用"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/20190101/reflect/b01167aa3bca.html"
+    >反射基础运用</a> 
+</h2>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/java/">java</a>
+  </div>
+   
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h2 id="1-什么是反射？"><a href="#1-什么是反射？" class="headerlink" title="1.什么是反射？"></a>1.什么是反射？</h2><p>反射是指在程序运行时期可以动态的加载类并访问、检测和修改对象的一种能力。 那为什么要使用反射呢？编程时一般会遇到这种情况，编译时期无法确定对象类型，只有在运行时期才能确定，比如Spring的配置中就大量使用了反射机制。通过反射能够获取到类的一切信息，访问到对象的一切属性和方法，包括private修饰的属性和方法。  </p> 
+      <a class="article-more-link" href="/20190101/reflect/b01167aa3bca.html"
+        >阅读更多...</a
+      >
+       
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%8F%8D%E5%B0%84/" rel="tag">反射</a></li></ul>
+
+    </footer>
+  </div>
+
+    
+ 
+   
+</article>
+
+    
+  </article>
   
 
+  
+  <nav class="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/">上一页</a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+  </nav>
   
 </section>
+</div>
+
       <footer class="footer">
   <div class="outer">
     <ul>

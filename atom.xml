@@ -41,11 +41,38 @@
   </entry>
   
   <entry>
+    <title>Linux软件安装归纳</title>
+    <link href="https://blog.taichangwei.com/20200308/linux4/3c087d2cbe86.html"/>
+    <id>https://blog.taichangwei.com/20200308/linux4/3c087d2cbe86.html</id>
+    <published>2020-03-07T23:33:39.000Z</published>
+    <updated>2020-11-27T23:41:33.533Z</updated>
+    
+    
+    <summary type="html">&lt;h2 id=&quot;1-Linux中软件安装方式&quot;&gt;&lt;a href=&quot;#1-Linux中软件安装方式&quot; class=&quot;headerlink&quot; title=&quot;1 Linux中软件安装方式&quot;&gt;&lt;/a&gt;1 Linux中软件安装方式&lt;/h2&gt;&lt;h3 id=&quot;1-1-软件包安装&quot;&gt;&lt;a href=&quot;#1-1-软件包安装&quot; class=&quot;headerlink&quot; title=&quot;1.1 软件包安装&quot;&gt;&lt;/a&gt;1.1 软件包安装&lt;/h3&gt;&lt;p&gt;Linux中的软件包(即二进制包)，主要分为两类&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;RPM包&lt;/strong&gt;：是由Red Hat 公司所开发的包管理系统。功能强大，安装、升级、查询和卸载都非常简单和方便，目前很多Linux发行版都在使用这种包管理机制，包括Fedora、CentOS、SuSE等。软件包文件后缀是 “&lt;code&gt;.rpm&lt;/code&gt;“。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;DPKG包&lt;/strong&gt;：是由Debian Linux 所开发出来的包管理机制，主要应用在Debian和Unbuntu中。软件包文件后缀是 “&lt;code&gt;.deb&lt;/code&gt;“。&lt;/li&gt;
+&lt;/ul&gt;</summary>
+    
+    
+    
+    <category term="linux" scheme="https://blog.taichangwei.com/categories/linux/"/>
+    
+    
+    <category term="rpm" scheme="https://blog.taichangwei.com/tags/rpm/"/>
+    
+    <category term="yum" scheme="https://blog.taichangwei.com/tags/yum/"/>
+    
+    <category term="apt" scheme="https://blog.taichangwei.com/tags/apt/"/>
+    
+  </entry>
+  
+  <entry>
     <title>wget与curl 命令详解</title>
     <link href="https://blog.taichangwei.com/20200305/linux3/79cf394d63e3.html"/>
     <id>https://blog.taichangwei.com/20200305/linux3/79cf394d63e3.html</id>
     <published>2020-03-04T23:13:33.000Z</published>
-    <updated>2020-11-27T23:18:20.541Z</updated>
+    <updated>2020-11-27T23:32:11.119Z</updated>
     
     
     <summary type="html">&lt;h2 id=&quot;wget-命令&quot;&gt;&lt;a href=&quot;#wget-命令&quot; class=&quot;headerlink&quot; title=&quot;wget 命令&quot;&gt;&lt;/a&gt;wget 命令&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;wget命令&lt;/strong&gt;用来从指定的URL下载文件。wget非常稳定，它在带宽很窄的情况下和不稳定网络中有很强的适应性，如果是由于网络的原因下载失败，wget会不断的尝试，直到整个文件下载完毕。如果是服务器打断下载过程，它会再次联到服务器上从停止的地方继续下载。这对从那些限定了链接时间的服务器上下载大文件非常有用。&lt;/p&gt;</summary>

@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+
+
+<head>
+  <meta charset="utf-8" />
+   
+  <meta name="keywords" content="java,博客,技术分享" />
+   
+  <meta name="description" content="分享学习心得，记录技术成长之路" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="google-site-verification" content="6PdDXp1HiBYOLkCarskqmK02dk0ftfxa7N1J-Em2fes" />
+  <meta name="baidu-site-verification" content="code-qU3aOUJvyN" />
+  <title>
+    Linux软件安装归纳 |  飞
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  
+
+  
+
+<link rel="alternate" href="/atom.xml" title="飞" type="application/atom+xml">
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    
+      
+      <canvas width="1777" height="841"
+        style="position: fixed; left: 0px; top: 0px; z-index: 99999; pointer-events: none;"></canvas>
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-Linux软件安装归纳"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Linux软件安装归纳
+</h1>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/linux/">linux</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">8k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">31 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h2 id="1-Linux中软件安装方式"><a href="#1-Linux中软件安装方式" class="headerlink" title="1 Linux中软件安装方式"></a>1 Linux中软件安装方式</h2><h3 id="1-1-软件包安装"><a href="#1-1-软件包安装" class="headerlink" title="1.1 软件包安装"></a>1.1 软件包安装</h3><p>Linux中的软件包(即二进制包)，主要分为两类</p>
+<ul>
+<li><strong>RPM包</strong>：是由Red Hat 公司所开发的包管理系统。功能强大，安装、升级、查询和卸载都非常简单和方便，目前很多Linux发行版都在使用这种包管理机制，包括Fedora、CentOS、SuSE等。软件包文件后缀是 “<code>.rpm</code>“。</li>
+<li><strong>DPKG包</strong>：是由Debian Linux 所开发出来的包管理机制，主要应用在Debian和Unbuntu中。软件包文件后缀是 “<code>.deb</code>“。</li>
+</ul>
+<a id="more"></a>
+
+<p>不论是RPM还是DPKG机制，都存在软件包依赖问题，比如软件包A依赖软件包B，软件包B又依赖软件包C，即依赖关系是 “A -&gt; B -&gt; C”，那么就必须先安装C，在安装B，最后A才能安装成功。为了解决这种依赖问题，Linux开发商都提供了<strong>在线安装</strong>机制，通过这种机制可以自动解决依赖关系，安装A时会自动安装B和C，就不需要手动去一步步安装B和C了。基于<strong>RPM</strong>包管理机制开发出了<strong>YUM在线安装机制</strong>，基于<strong>DPKG</strong>包管理机制开发出了<strong>APT在线安装机制</strong>。</p>
+<table>
+<thead>
+<tr>
+<th>发行版代表</th>
+<th>软件包管理机制</th>
+<th>相关指令</th>
+<th>在线安装机制(指令)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Red Hat/CentOS</td>
+<td>RPM</td>
+<td>rpm, rpmbuild</td>
+<td>YUM(yum)）</td>
+</tr>
+<tr>
+<td>Debian/Ubuntu</td>
+<td>DPKG</td>
+<td>dpkg</td>
+<td>APT(apt-get)</td>
+</tr>
+</tbody></table>
+<p><strong>软件包安装优缺点</strong></p>
+<ul>
+<li>优点：<ul>
+<li>包管理系统简单，只通过几个命令就可以实现包的安装、升级、查询和卸载</li>
+<li>安装速度比源码包安装快的多</li>
+</ul>
+</li>
+<li>缺点：<ul>
+<li>经过编译，不再可以看到源代码</li>
+<li>功能选择不如源码包灵活</li>
+<li>安装过程需要依赖关系。不过有在线安装机制可以弥补这个缺点</li>
+</ul>
+</li>
+</ul>
+<h3 id="1-2-源码包安装"><a href="#1-2-源码包安装" class="headerlink" title="1.2 源码包安装"></a>1.2 源码包安装</h3><p>所谓源码包一般就是指C语言开发的源代码文件的一个压缩包(<code>.tar.gz</code>或<code>.tar.bz2</code>)。源码包的编译用到了linux系统里的编译器 <strong>gcc</strong>，利用它就可以把C语言变成可执行的二进制文件，所以如果要使用源码包安装必须先安装 gcc 编译器(可以使用 <code>yum install -y gcc</code> 完成安装)。</p>
+<p><strong>源码包安装优缺点</strong></p>
+<ul>
+<li>优点<ul>
+<li>开源，如果有足够的能力，可以修改源代码</li>
+<li>可以自由选择所需的功能</li>
+<li>软件是编译安装，所以更加适合自己的系统，更加稳定、效率更高</li>
+<li>卸载方便。直接删除安装目录即可</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>安装过程步骤较多，尤其安装较大的软件集合时（如LAMP环境搭建），容易出现拼写错误</li>
+<li>编译过程时间较长，安装比二进制包安装时间长</li>
+<li>因为是编译安装，安装过程中一旦报错新手很难解决</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-RPM-管理软件包"><a href="#2-RPM-管理软件包" class="headerlink" title="2 RPM 管理软件包"></a>2 RPM 管理软件包</h2><p><strong>RPM 软件包的命名规则为</strong>：<code>软件包名-版本-发布次数-Linux平台-硬件平台.rpm</code><br>以Apache软件包的包全名为例：”httpd-2.2.15-69.el6.centos.x86_64.rpm”<br>1、httpd：软件包名<br>2、2.2.15：软件版本<br>3、69：软件发布的次数<br>4、el6.centos：适合的Linux平台<br>5、x86_64：适合的硬件平台，这里表示64位<br>6、rpm：rpm包的扩展名，注意Linux是没有扩展名的概念，这里是为了方便管理员识别</p>
+<p><strong>RPM 包来源：</strong></p>
+<ul>
+<li>第一种方式，官网下载需要安装的RPM包</li>
+<li>第二种方式，通过挂载安装光盘，光盘中包含所有的RPM包。以 Centos6 为例：<ol>
+<li>给系统添加光盘，如果是虚拟机则直接在设置里找到虚拟光驱添加光盘映像文件(*.iso)即可。Centos6有两个盘，一般第一张光盘就包含了大部分常用的RPM包，也可以同时两张都挂载。如果两盘都添加的话，对应的设配文件分别为，<code>/dev/cdrom</code>、<code>/dev/cdrom1</code></li>
+<li>创建两个目录作为光盘挂载点，<code>mkdir /mnt/cd1/ /mnt/cd2/</code></li>
+<li>挂载光盘，<code>mount /dev/cdrom /mnt/cd1/</code>、<code>mount /dev/cdrom1 /mnt/cd2/</code>。挂载完成后，可在<code>/mnt/cd1/Packages/</code>和<code>/mnt/cd2/Packages/</code>目录下看到所有的RPM包</li>
+</ol>
+</li>
+</ul>
+<p><strong>RPM 包的默认安装位置如下：</strong></p>
+<table>
+<thead>
+<tr>
+<th>路径</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>/etc/</td>
+<td>配置文件的安装目录</td>
+</tr>
+<tr>
+<td>/usr/bin/</td>
+<td>可执行的命令安装目录</td>
+</tr>
+<tr>
+<td>/usr/lib/</td>
+<td>程序所使用的函数库保存位置</td>
+</tr>
+<tr>
+<td>/usr/share/doc/</td>
+<td>基本的软件使用手册保存位置</td>
+</tr>
+<tr>
+<td>/usr/share/man/</td>
+<td>帮助文件保存位置</td>
+</tr>
+</tbody></table>
+<h3 id="2-1-RPM-命令"><a href="#2-1-RPM-命令" class="headerlink" title="2.1 RPM 命令"></a>2.1 RPM 命令</h3><p>RPM软件包的管理工具是 <code>rpm</code> 命令，命令格式：<code>rpm 选项 [软件包名]</code></p>
+<ul>
+<li>选项(在下面对应的场景会具体说明)</li>
+<li><strong>软件包名</strong>：指定要操做的rpm软件包。如果操作的是未安装过的软件包，要使用<strong>包全名</strong>，而且要注意绝对路径；如果操作的是已安装过的软件包，可以在任意目录下直接使用包名，<strong>因为如果软件安装完毕，该软件的相关信息会被写入<code>/var/lib/rpm/</code> 目录下的数据库文件中</strong>(这个目录下的数据库文件很重要，后续软件升级和卸载就就依赖于这个数据库)</li>
+</ul>
+<h3 id="2-2-RPM-安装"><a href="#2-2-RPM-安装" class="headerlink" title="2.2 RPM 安装"></a>2.2 RPM 安装</h3><p>安装命令：<code>rpm -ivh 包全名</code></p>
+<ul>
+<li>选项<ul>
+<li><code>-i</code>：安装(install)</li>
+<li><code>-v</code>：显示详细信息</li>
+<li><code>-h</code>：打印#显示安装进度</li>
+<li><code>--nodeps</code>：不检测依赖性安装。软件安装时会检测依赖性，如果所依赖的软件还未安装则会报错，加上这个选项则不检测依赖强制安装，但这样安装的软件一般不能使用，建议不要这样做。</li>
+<li><code>--replacefiles</code>：替换文件安装。如果安装的软件包中的部分文件已经存在，则会安装报错，使用该选项就会覆盖现有文件继续安装</li>
+<li><code>--replacepkgs</code>：替换软件安装。如果软件包已经安装，使用该选项可把软件包重新安装一遍</li>
+<li><code>--force</code>：强制安装。不管是否已经安装，都重新安装，相当于 “–replacefiles” 和 “–replacepkgs” 的综合</li>
+<li><code>--test</code>：测试安装。不会实际安装，只是检测一下依赖</li>
+<li><code>--prefix=安装路径</code>：指定安装路径。为安装的软件指定安装路径，而不是使用默认安装路径。注意：如果指定了安装路径，软件没有安装到默认路径中的话，系统会找不到这些安装的软件，而需要进行手工配置才能被系统识别，所以RPM包一般建议采用默认路径安装</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-3-RPM-升级"><a href="#2-3-RPM-升级" class="headerlink" title="2.3 RPM 升级"></a>2.3 RPM 升级</h3><p>升级命令：<code>rpm -Uvh 包全名</code> 或 <code>rpm -Fvh 包全名</code></p>
+<ul>
+<li>选项<ul>
+<li><code>-U</code>：升级安装。如果没有安装过，系统直接安装，如果已安装的版本较旧，则升级到新版本</li>
+<li><code>-F</code>：升级安装。如果没有安装过，则不会安装，必须安装有较旧版本才能升级</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-4-RPM-卸载"><a href="#2-4-RPM-卸载" class="headerlink" title="2.4 RPM 卸载"></a>2.4 RPM 卸载</h3><p>卸载命令：<code>rpm -e 包名</code></p>
+<ul>
+<li>选项<ul>
+<li><code>-e</code>：卸载软件包</li>
+<li><code>--nodeps</code>：卸载时不检查依赖性。如果卸载的软件被其他软件依赖，卸载失败，加上此选项可强制卸载</li>
+</ul>
+</li>
+</ul>
+<p>注意：卸载已安装的软件使用包名即可，不需要使用包全名</p>
+<h3 id="2-5-RPM-查询"><a href="#2-5-RPM-查询" class="headerlink" title="2.5 RPM 查询"></a>2.5 RPM 查询</h3><p><strong>1. 查询软件包是否安装</strong>：<code>rpm -q 包名</code></p>
+<ul>
+<li>选项：<ul>
+<li><code>-q</code>：查询（query）</li>
+</ul>
+</li>
+</ul>
+<p><strong>2. 查询系统中所有安装的软件包</strong>：<code>rpm -qa</code></p>
+<ul>
+<li>选项：<ul>
+<li><code>-a</code>：所有（all）</li>
+</ul>
+</li>
+</ul>
+<p><strong>3. 查询软件包的详细信息</strong><br>已安装：<code>rpm -qi 包名</code><br>未安装：<code>rpm -qip 包全名</code></p>
+<ul>
+<li>选项：<ul>
+<li><code>-i</code>：查询软件信息（information）</li>
+<li><code>-p</code>：查询没有安装的软件包（package）</li>
+</ul>
+</li>
+</ul>
+<p><strong>4. 查询软件包的文件列表和安装目录</strong><br>已安装：<code>rpm -ql 包名</code><br>未安装：<code>rpm -qlp 包全名</code></p>
+<ul>
+<li>选项：<ul>
+<li><code>-l</code>：列出软件包中所有文件和软件所安装的目录(list)</li>
+</ul>
+</li>
+</ul>
+<p><strong>5. 查询系统文件属于哪个软件包</strong>：<code>rpm -qf 系统文件</code></p>
+<ul>
+<li>选项：<ul>
+<li><code>-f</code>：查询拥有指定文件的软件包(file)</li>
+</ul>
+</li>
+</ul>
+<p><strong>6. 查询软件包所依赖的其他软件包</strong><br>已安装：<code>rpm -qR 包名</code><br>未安装：<code>rpm -qRp 包全名</code></p>
+<ul>
+<li>选项：<ul>
+<li><code>-R</code>：查询软件包的依赖性(required)</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-6-RPM-验证"><a href="#2-6-RPM-验证" class="headerlink" title="2.6 RPM 验证"></a>2.6 RPM 验证</h3><p><strong>1. 校验指定的已安装RPM包</strong>：<code>rpm -V 包名</code></p>
+<ul>
+<li>选项：<ul>
+<li><code>-V</code>：校验指定的RPM包中的文件(verify)</li>
+</ul>
+</li>
+</ul>
+<p>如果执行命令后无任何提示，表明没有做任何修改，如果执行命令后有内容输出，则软件包中的文件被修改过。下面假设已安装的Apache配置文件 “/etc/httpd/conf/httpd.conf” 被修改过为例，来说明一下校验输出的内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# rpm -V httpd</span><br><span class="line">S.5....T.  c &#x2F;etc&#x2F;httpd&#x2F;conf&#x2F;httpd.conf</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>第一列(“S.5….T.”)是验证的内容，具体字母含义如下：<ul>
+<li><code>S</code>: 文件大小是否改变</li>
+<li><code>M</code>: 文件的类型或文件的权限( rwx )是否被改变</li>
+<li><code>5</code>: 文件MD5 校验和是否改变( 可以看成文件内容是否改变 )</li>
+<li><code>D</code>: 设备的主从代码是否改变</li>
+<li><code>L</code>: 文件路径是否改变</li>
+<li><code>U</code>: 文件的属主( 所有者 ) 是否改变</li>
+<li><code>G</code>: 文件的属组是否改变</li>
+<li><code>T</code>: 文件的修改时间是否改变</li>
+</ul>
+</li>
+<li>第二列(“c”)是被修改的文件类型，有以下几种：<ul>
+<li><code>c</code>: 配置文件(config file)</li>
+<li><code>d</code>: 普通文档(documentation)</li>
+<li><code>g</code>: “鬼”文件, 很少见, 就是该文件不应该被这个RPM包包含(ghost file)</li>
+<li><code>L</code>: 授权文件(license file)</li>
+<li><code>r</code>: 描述文件(read me) </li>
+</ul>
+</li>
+<li>第三列(“/etc/httpd/conf/httpd.conf”)被修改的具体文件</li>
+</ul>
+<p><strong>2. 校验本机所有已安装RPM包</strong>：<code>rpm -Va</code></p>
+<p><strong>3. 校验某个系统文件是否被修改</strong>：<code>rpm -Vf 系统文件</code></p>
+<h2 id="3-YUM-管理软件包"><a href="#3-YUM-管理软件包" class="headerlink" title="3 YUM 管理软件包"></a>3 YUM 管理软件包</h2><h3 id="3-1-YUM-源文件介绍"><a href="#3-1-YUM-源文件介绍" class="headerlink" title="3.1 YUM 源文件介绍"></a>3.1 YUM 源文件介绍</h3><p><strong>yum 源</strong>指的就是获取 rpm 包的位置(默认就是官网服务器，包含所有的软件包)。yum源配置文件保存在 <code>/etc/yum.repos.d/</code> 目录下，一共有5个扩展名为 “.repo” 的文件 <code>CentOS-Base.repo</code>、<code>CentOS-fasttrack.repo</code>、<code>CentOS-Vault.repo</code>、<code>CentOS-Debuginfo.repo</code>、<code>CentOS-Media.repo</code>。默认情况下只有 <code>CentOS-Base.repo</code> 文件是生效，文件内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost yum.repos.d]# cat CentOS-Base.repo </span><br><span class="line"># CentOS-Base.repo</span><br><span class="line">#</span><br><span class="line"># The mirror system uses the connecting IP address of the client and the</span><br><span class="line"># update status of each mirror to pick mirrors that are updated to and</span><br><span class="line"># geographically close to the client.  You should use this for CentOS updates</span><br><span class="line"># unless you are manually picking other mirrors.</span><br><span class="line">#</span><br><span class="line"># If the mirrorlist&#x3D; does not work for you, as a fall back you can try the </span><br><span class="line"># remarked out baseurl&#x3D; line instead.</span><br><span class="line">#</span><br><span class="line">#</span><br><span class="line"></span><br><span class="line">[base]</span><br><span class="line">name&#x3D;CentOS-$releasever - Base</span><br><span class="line">mirrorlist&#x3D;http:&#x2F;&#x2F;mirrorlist.centos.org&#x2F;?release&#x3D;$releasever&amp;arch&#x3D;$basearch&amp;repo&#x3D;os&amp;infra&#x3D;$infra</span><br><span class="line">#baseurl&#x3D;http:&#x2F;&#x2F;mirror.centos.org&#x2F;centos&#x2F;$releasever&#x2F;os&#x2F;$basearch&#x2F;</span><br><span class="line">gpgcheck&#x3D;1</span><br><span class="line">gpgkey&#x3D;file:&#x2F;&#x2F;&#x2F;etc&#x2F;pki&#x2F;rpm-gpg&#x2F;RPM-GPG-KEY-CentOS-6</span><br><span class="line"></span><br><span class="line">#released updates </span><br><span class="line">[updates]</span><br><span class="line">name&#x3D;CentOS-$releasever - Updates</span><br><span class="line">mirrorlist&#x3D;http:&#x2F;&#x2F;mirrorlist.centos.org&#x2F;?release&#x3D;$releasever&amp;arch&#x3D;$basearch&amp;repo&#x3D;updates&amp;infra&#x3D;$infra</span><br><span class="line">#baseurl&#x3D;http:&#x2F;&#x2F;mirror.centos.org&#x2F;centos&#x2F;$releasever&#x2F;updates&#x2F;$basearch&#x2F;</span><br><span class="line">gpgcheck&#x3D;1</span><br><span class="line">gpgkey&#x3D;file:&#x2F;&#x2F;&#x2F;etc&#x2F;pki&#x2F;rpm-gpg&#x2F;RPM-GPG-KEY-CentOS-6</span><br><span class="line"></span><br><span class="line">#additional packages that may be useful</span><br><span class="line">[extras]</span><br><span class="line">name&#x3D;CentOS-$releasever - Extras</span><br><span class="line">mirrorlist&#x3D;http:&#x2F;&#x2F;mirrorlist.centos.org&#x2F;?release&#x3D;$releasever&amp;arch&#x3D;$basearch&amp;repo&#x3D;extras&amp;infra&#x3D;$infra</span><br><span class="line">#baseurl&#x3D;http:&#x2F;&#x2F;mirror.centos.org&#x2F;centos&#x2F;$releasever&#x2F;extras&#x2F;$basearch&#x2F;</span><br><span class="line">gpgcheck&#x3D;1</span><br><span class="line">gpgkey&#x3D;file:&#x2F;&#x2F;&#x2F;etc&#x2F;pki&#x2F;rpm-gpg&#x2F;RPM-GPG-KEY-CentOS-6</span><br><span class="line"></span><br><span class="line">#additional packages that extend functionality of existing packages</span><br><span class="line">[centosplus]</span><br><span class="line">name&#x3D;CentOS-$releasever - Plus</span><br><span class="line">mirrorlist&#x3D;http:&#x2F;&#x2F;mirrorlist.centos.org&#x2F;?release&#x3D;$releasever&amp;arch&#x3D;$basearch&amp;repo&#x3D;centosplus&amp;infra&#x3D;$infra</span><br><span class="line">#baseurl&#x3D;http:&#x2F;&#x2F;mirror.centos.org&#x2F;centos&#x2F;$releasever&#x2F;centosplus&#x2F;$basearch&#x2F;</span><br><span class="line">gpgcheck&#x3D;1</span><br><span class="line">enabled&#x3D;0</span><br><span class="line">gpgkey&#x3D;file:&#x2F;&#x2F;&#x2F;etc&#x2F;pki&#x2F;rpm-gpg&#x2F;RPM-GPG-KEY-CentOS-6</span><br><span class="line"></span><br><span class="line">#contrib - packages by Centos Users</span><br><span class="line">[contrib]</span><br><span class="line">name&#x3D;CentOS-$releasever - Contrib</span><br><span class="line">mirrorlist&#x3D;http:&#x2F;&#x2F;mirrorlist.centos.org&#x2F;?release&#x3D;$releasever&amp;arch&#x3D;$basearch&amp;repo&#x3D;contrib&amp;infra&#x3D;$infra</span><br><span class="line">#baseurl&#x3D;http:&#x2F;&#x2F;mirror.centos.org&#x2F;centos&#x2F;$releasever&#x2F;contrib&#x2F;$basearch&#x2F;</span><br><span class="line">gpgcheck&#x3D;1</span><br><span class="line">enabled&#x3D;0</span><br><span class="line">gpgkey&#x3D;file:&#x2F;&#x2F;&#x2F;etc&#x2F;pki&#x2F;rpm-gpg&#x2F;RPM-GPG-KEY-CentOS-6</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>在 CentOS-Base.repo 文件中有5个 yum 源容器，这里主要解释一下 <code>[base]</code> 容器(其他容器类似)：</p>
+<ul>
+<li><code>[base]</code>：容器名称，一定要放在 [ ] 中</li>
+<li><code>name</code>：容器说明，可以自己随便写</li>
+<li><code>mirrorlist</code>：镜像站点，这个可以注释掉</li>
+<li><code>baseurl</code>：yum源服务器的地址。mirrorlist是由yum程序自行去找镜像站点，baseurl则是指定固定的一个地址</li>
+<li><code>enabled</code>：此容器是否生效，如果<strong>不写</strong>或者<strong>enabled=1</strong>则表示此容器生效，写成<strong>enabled=0</strong>则表示次容器不生效</li>
+<li><code>gpgcheck</code>：如果为1表示RPM的数字证书生效；如果为0表示RPM的数字证书不生效</li>
+<li><code>gpgkey</code>：数字证书的公钥文件保存位置</li>
+</ul>
+<p><strong>搭建本地光盘为yum源</strong><br>如果在没有网的情况下，可以把挂载的光盘作为yum源。</p>
+<p>第一步，首先挂载光盘。这里假设已经挂载了两张光盘，挂载点分别为<code>/mnt/cd1/</code>和<code>/mnt/cd2/</code><br>第二步，修改 <code>CentOS-Media.repo</code> 文件。修改baseurl为两个光盘的挂载点，修改enabled=1。如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[c6-media]</span><br><span class="line">name&#x3D;CentOS-$releasever - Media</span><br><span class="line"># 地址为本地光盘的挂载点</span><br><span class="line">baseurl&#x3D;file:&#x2F;&#x2F;&#x2F;mnt&#x2F;cd1&#x2F;</span><br><span class="line">        file:&#x2F;&#x2F;&#x2F;mnt&#x2F;cd2&#x2F;</span><br><span class="line">gpgcheck&#x3D;1</span><br><span class="line"># 把 enabled 改为1让这个容器生效</span><br><span class="line">enabled&#x3D;1</span><br><span class="line">gpgkey&#x3D;file:&#x2F;&#x2F;&#x2F;etc&#x2F;pki&#x2F;rpm-gpg&#x2F;RPM-GPG-KEY-CentOS-6</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>第三步，为了<code>CentOS-Media.repo</code>文件真正的生效，需要使其他的yum源配置文件失效。因为只有扩展名为 “*.repo” 的文件才能作为yum源配置文件，可以修改其他yum源配置为备份文件，如 <code>mv CentOS-Base.repo CentOS-Base.repo.bak</code></p>
+<h3 id="3-2-YUM-命令"><a href="#3-2-YUM-命令" class="headerlink" title="3.2 YUM 命令"></a>3.2 YUM 命令</h3><p><strong>yum命令</strong>是在Fedora和RedHat以及SUSE中基于 <strong>rpm</strong> 的软件包管理器，能够从指定的服务器自动下载RPM包并且安装，可以自动处理依赖性关系，并且一次安装所有依赖的软体包，无须繁琐地一次次下载、安装。</p>
+<p>yum 命令格式：<code>yum [选项] COMMAND [软件包]</code></p>
+<ul>
+<li>选项：<ul>
+<li><code>-y</code>：自动回答”yes”，不再询问。如果不加该选项，安装过程中每个涉及的包安装都要手工回答 “yes” or “no”</li>
+<li><code>-q</code>：静默模式。不显示安装过程</li>
+<li><code>-C</code>：完全从缓存中运行，而不去下载或者更新任何头文件</li>
+</ul>
+</li>
+<li><strong>COMMAND</strong> (要进行的操作)<ul>
+<li><code>install</code>：执行安装操作</li>
+<li><code>update</code>：执行升级操作</li>
+<li><code>remove</code>：执行卸载操作</li>
+<li><code>list</code>：显示可用软件包列表</li>
+<li><code>search</code>：根据关键字匹配软件包</li>
+<li><code>info</code>：显示软件包信息</li>
+</ul>
+</li>
+<li>软件包：如果为包名，则默认为软件包的最新版本；如果要指定软件包版本，则需要使用包全名</li>
+</ul>
+<h3 id="3-3-YUM-安装"><a href="#3-3-YUM-安装" class="headerlink" title="3.3 YUM 安装"></a>3.3 YUM 安装</h3><p>安装指定软件包：<code>yum -y install 包名</code><br>安装全部软件包：<code>yum -y isntall</code> (不常用)</p>
+<h3 id="3-4-YUM-升级"><a href="#3-4-YUM-升级" class="headerlink" title="3.4 YUM 升级"></a>3.4 YUM 升级</h3><p>升级指定软件包：<code>yum -y update 包名</code><br>升级全部软件包：<code>yum -y update</code> (不常用)</p>
+<h3 id="3-5-YUM-卸载"><a href="#3-5-YUM-卸载" class="headerlink" title="3.5 YUM 卸载"></a>3.5 YUM 卸载</h3><p>卸载指定软件包：<code>yum remove 包名</code></p>
+<h3 id="3-6-YUM-查询"><a href="#3-6-YUM-查询" class="headerlink" title="3.6 YUM 查询"></a>3.6 YUM 查询</h3><p><strong>1. 查询软件包列表</strong><br>查询yum源服务器上所有可安装的软件包列表：<code>yum list</code><br>查询yum源服务器上是否存在某个软件包：<code>yum list 包名</code></p>
+<p><strong>2. 查询关键字属于哪个软件包</strong><br>命令格式：<code>yum search 关键字</code><br>一般用于查找 某个指令 是由哪个软件包提供的。比如，要使用 “ifconfig” 指令，需要先安装 “net-tools” 包</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost yum.repos.d]# yum search ifconfig</span><br><span class="line">已加载插件：fastestmirror, security</span><br><span class="line">Loading mirror speeds from cached hostfile</span><br><span class="line"> * base: mirrors.huaweicloud.com</span><br><span class="line"> * extras: mirrors.huaweicloud.com</span><br><span class="line"> * updates: mirrors.huaweicloud.com</span><br><span class="line">&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; Matched: ifconfig &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</span><br><span class="line">net-tools.x86_64 : Basic networking tools</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>3. 查询指定软件包信息</strong>：<code>yum info 软件包</code></p>
+<h3 id="3-6-YUM-缓存"><a href="#3-6-YUM-缓存" class="headerlink" title="3.6 YUM 缓存"></a>3.6 YUM 缓存</h3><p>默认情况下，通过 yum 成功安装软件后，会把下载的软件包删除。如果要保留下载的软件包，可以编辑配置文件 <code>/etc/yum.conf</code>，把里面 “keepcache” 参数改为 1 (默认 keepcache=0 )，这样每次通过 yum 安装软件时，会把下载的软件包缓存在 <code>/var/cache/yum/</code> 目录下，下次再安装相同的软件时，可以从缓存中获取软件包，即使在没有网络的情况下也可正常安装。</p>
+<p><strong>1. 清除缓存</strong>：<code>yum clean packages|headers|oldheaders|all</code><br><code>packages</code>：清除缓存目下的软件包<br><code>headers</code>：清除缓存目录下的 headers<br><code>oldheaders</code>：清除缓存目录下旧的 headers<br><code>all</code>：清除全部</p>
+<p><strong>2. 重新建立新的缓存</strong>：<code>yum makecache</code></p>
+<p><strong>3. 只从缓存中查找软件包并安装</strong>：<code>yum -C install 包名</code></p>
+<h3 id="3-7-YUM-软件组管理"><a href="#3-7-YUM-软件组管理" class="headerlink" title="3.7 YUM 软件组管理"></a>3.7 YUM 软件组管理</h3><p><strong>软件组</strong>指的是一组相关的软件包(注意，这里指的不是依赖关系)，通过 yum 命令可以对组内软件包批量管理。</p>
+<p><strong>1. 列出所有可用软件组</strong>：<code>yum grouplist</code> </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost yum.repos.d]# yum grouplist</span><br><span class="line">已加载插件：fastestmirror, security</span><br><span class="line">设置组进程</span><br><span class="line">Loading mirror speeds from cached hostfile</span><br><span class="line"> * base: mirrors.huaweicloud.com</span><br><span class="line"> * extras: mirrors.huaweicloud.com</span><br><span class="line"> * updates: mirrors.huaweicloud.com</span><br><span class="line">已安装的组：</span><br><span class="line">   Java 平台</span><br><span class="line">   NFS 文件服务器</span><br><span class="line">   ...省略...</span><br><span class="line">Installed Language Groups:</span><br><span class="line">   中文支持 [zh]</span><br><span class="line">   亚美尼亚语支持 [hy]</span><br><span class="line">   ...省略...</span><br><span class="line">有效的组:</span><br><span class="line">   MySQL 数据库服务器</span><br><span class="line">   万维网服务器</span><br><span class="line">   ...省略...</span><br><span class="line">Available Language Groups:</span><br><span class="line">   上索布语支持 [hsb]</span><br><span class="line">   不丹语支持 [dz]</span><br><span class="line">   ...省略...</span><br><span class="line">完成</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p><strong>2. 查询组内包含哪些软件</strong>：<code>yum groupinfo &quot;软件组名&quot;</code> </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost yum.repos.d]# yum groupinfo &quot;万维网服务器&quot;</span><br><span class="line">已加载插件：fastestmirror, security</span><br><span class="line">设置组进程</span><br><span class="line">Loading mirror speeds from cached hostfile</span><br><span class="line"> * base: mirrors.huaweicloud.com</span><br><span class="line"> * extras: mirrors.huaweicloud.com</span><br><span class="line"> * updates: mirrors.huaweicloud.com</span><br><span class="line"></span><br><span class="line">组：万维网服务器</span><br><span class="line"> 描述：允许将系统作为 web 服务器使用，并运行 Perl 和 Python web 应用程序。</span><br><span class="line"> 必要的软件包：</span><br><span class="line">   httpd</span><br><span class="line"> 默认的软件包：</span><br><span class="line">   crypto-utils</span><br><span class="line">   httpd-manual</span><br><span class="line">   mod_perl</span><br><span class="line">   mod_ssl</span><br><span class="line">   mod_wsgi</span><br><span class="line">   webalizer</span><br><span class="line"> 可选的软件包：</span><br><span class="line">   certmonger</span><br><span class="line">   libmemcached</span><br><span class="line">   memcached</span><br><span class="line">   mod_auth_kerb</span><br><span class="line">   ...省略...</span><br><span class="line">  </span><br></pre></td></tr></table></figure>
+
+<p>注意：使用本地终端查出的组名都是英文的，命令中的软件组名也需要使用英文；远程终端(如Xshell)如果支持中文，查出的软件组名是中文的，所以命令中的软件组名既可以使用中文，也可以使用英文，<code>yum groupinfo &quot;万维网服务器&quot;</code> 和 <code>yum groupinfo &quot;Web Server&quot;</code> 是等效的</p>
+<p><strong>3. 安装软件组内所有软件</strong>：<code>yum groupinstall &quot;软件组名&quot;</code><br><strong>4. 卸载软件组内多有软件</strong>：<code>yum groupremove &quot;软件组名&quot;</code></p>
+<h2 id="4-DPKG-管理软件包"><a href="#4-DPKG-管理软件包" class="headerlink" title="4 DPKG 管理软件包"></a>4 DPKG 管理软件包</h2><p><strong>DPKG 软件包的命名规则为</strong>：<code>软件包名_版本号-修订号_平台.deb</code><br>例如：<code>openssh-server_8.2p1-4_amd64.deb</code></p>
+<h3 id="4-1-DPKG-命令"><a href="#4-1-DPKG-命令" class="headerlink" title="4.1 DPKG 命令"></a>4.1 DPKG 命令</h3><p>DPKG 包的管理工具是 <code>dpkg</code> 命令，命令格式：<code>dpkg 选项 [软件包名]</code></p>
+<ul>
+<li>选项(在下面对应的场景会具体说明)</li>
+<li>软件包名：指定要操做的dpkg软件包。如果操作的是未安装过的软件包，要使用<strong>包全名</strong>，而且要注意绝对路径；如果操作的是已安装过的软件包，可以在任意目录下直接使用包名，<strong>因为和RPM类似，DPKG包管理也存在文件数据库来维护已安装的软件信息， 如果软件安装完毕，该软件的相关信息会被写入<code>/var/lib/dpkg/</code>目录下的数据库文件中，一般”/var/lib/dpkg/status” 文件中存储软件状态和控制信息，”/var/lib/dpkg/info/xxx.list”文件中记录了软件安装文件清单</strong></li>
+</ul>
+<h3 id="4-2-DPKG-安装"><a href="#4-2-DPKG-安装" class="headerlink" title="4.2 DPKG 安装"></a>4.2 DPKG 安装</h3><p>安装命令：<code>dpkg -i 包全名</code></p>
+<ul>
+<li>选项<ul>
+<li><code>-i</code>：安装</li>
+<li><code>--unpack</code>：解开软件包</li>
+<li><code>--configure</code>：配置软件包<blockquote>
+<p><code>-i</code> 选项所做操作包含解开软件包和配置软件包，相当于这两步操作：<br><code>dpkg --unpack 包全名</code><br><code>dpkg --configure 包名</code></p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-3-DPKG-卸载"><a href="#4-3-DPKG-卸载" class="headerlink" title="4.3 DPKG 卸载"></a>4.3 DPKG 卸载</h3><p>卸载命令：<code>dpkg -r|-P 包名</code>    </p>
+<ul>
+<li>选项<ul>
+<li><code>-r</code>：删除已安装的软件包，但保留配置文件</li>
+<li><code>-P</code>：删除已安装软件包，完全清除包（含配置文件）<h3 id="4-4-DPKG-查询"><a href="#4-4-DPKG-查询" class="headerlink" title="4.4 DPKG 查询"></a>4.4 DPKG 查询</h3></li>
+</ul>
+</li>
+<li>*1. 查询已安装软件包列表**，命令：<code>dpkg -l [包名]</code></li>
+<li>选项<ul>
+<li><code>-l</code>：查询已安装软件包列表，包含状态、版本信息</li>
+<li><code>包名</code>：查询指定的软件包，如果省略查询全部已安装软件包。包名可使用通配符</li>
+</ul>
+</li>
+</ul>
+<p>示例：<br><img src="https://taicw-blog.oss-cn-beijing.aliyuncs.com/202001/linux004.png?x-oss-process=style/watermarking" alt="image.png"><br>图中，第一列表示软件包状态标识，状态标识共三位字符表示，<br>第一位，期望状态：<br><code>u(Unknown)</code>: 状态未知，这意味着软件包未安装，并且用户也未发出安装请求<br><code>i(Install)</code>: 用户请求安装软件包<br><code>r(Remove)</code>: 用户请求卸载软件包<br><code>p(Purge)</code>: 用户请求清除软件包<br><code>h(Hold)</code>: 用户请求保持软件包版本锁定</p>
+<p>第二位，当前状态：<br><code>n(Not)</code>：软件包未安装<br><code>i(Inst)</code>：软件包安装并完成配置<br><code>c(Conf-files)</code>：软件包以前安装过，现在删除了，但是它的配置文件还留在系统中<br><code>U(Unpacked)</code>：软件包仅被解包，还未配置<br><code>F(halF-conf)</code>：试图配置软件包，但是失败了<br><code>H(Half-inst)</code>：软件包安装，但是但是没有成功<br><code>W(trig-aWait)</code>：触发器等待<br><code>T(Trig-pend)</code>：触发器未决</p>
+<p>第三位，错误状态：<br><code>h</code>：软件包被强制保持，因为有其它软件包依赖需求，无法升级<br><code>R</code>：Reinst-required，软件包被破坏，可能需要重新安装才能正常使用(包括删除)<br><code>x</code>：软包件被破坏，并且被强制保持</p>
+<p><strong>2. 列出软件包关联文件</strong>，命令：<code>dpkg -L 包名</code> 或 <code>dpkg -c 包全名</code></p>
+<ul>
+<li>选项<ul>
+<li><code>-L</code>：列出已安装软件包关联文件列表</li>
+<li><code>-c</code>：列出未安装软件包关联文件列表</li>
+</ul>
+</li>
+</ul>
+<p>也可以通过该命令查看软件包文件安装目录位置</p>
+<p><strong>3. 显示软件包的详细状态</strong>，命令：<code>dpkg -s 包名</code></p>
+<ul>
+<li>选项<ul>
+<li><code>-s</code> 或 <code>--status</code>：显示软件包的详细状态</li>
+</ul>
+</li>
+</ul>
+<p><strong>4. 搜索含有指定文件的软件包</strong>，命令：<code>dpkg -S 文件名</code></p>
+<ul>
+<li>选项<ul>
+<li><code>-S</code> 或 <code>--search</code>：搜索含有指定文件的软件包。文件名可使用通配符<br>示例：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">taicw@taicw-PC:~&#x2F;Downloads$ dpkg -S apache2.conf</span><br><span class="line">apache2: &#x2F;etc&#x2F;apache2&#x2F;apache2.conf</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>*5. 搜索系统中损坏的软件包**，命令：<code>dpkg -C</code></li>
+</ul>
+<h2 id="5-APT-管理软件包"><a href="#5-APT-管理软件包" class="headerlink" title="5 APT 管理软件包"></a>5 APT 管理软件包</h2><h3 id="5-1-APT-源文件介绍"><a href="#5-1-APT-源文件介绍" class="headerlink" title="5.1 APT 源文件介绍"></a>5.1 APT 源文件介绍</h3><p><strong>APT</strong> 与 <strong>YUM</strong> 类似，都是从远程软件仓库获取软件包进行安装。其中相关文件说明如下：<br><code>/etc/apt/sources.list</code>：记录了软件源的地址<br><code>var/lib/dpkg/available</code>：文件的内容是软件包的描述信息，该文件包括当前系统所使用的安装源中的所有软件包，其中包括当前系统中已安装的和未安装的软件包信息<br><code>/var/lib/apt/lists/</code>：使用 “<code>apt-get update</code>“ 命令扫会描软件源服务器，并为源服务器所有软件资源建立索引文件保存至本地目录”/var/lib/apt/lists/“下，提高系统查询效率<br><code>/var/cache/apt/archives/</code>：通过 “apt-get” 安装下载的软件包都缓存在这里。</p>
+<h3 id="5-2-APT-命令"><a href="#5-2-APT-命令" class="headerlink" title="5.2 APT 命令"></a>5.2 APT 命令</h3><p>APT 管理软件包，主要由以下几个命令组成：<br><code>apt-get</code>：主要用来安装、升级和卸载软件，智能解决依赖关系(新版可用 <code>apt</code> 命令代替，去掉了”-get”)<br><code>apt-cache</code>：查询软件包缓存文件<br><code>apt-file</code>：软件包查找工具，可以查到软件包所含的文件和安装的位置</p>
+<h3 id="5-3-刷新源"><a href="#5-3-刷新源" class="headerlink" title="5.3 刷新源"></a>5.3 刷新源</h3><p>命令：<code>apt-get update</code><br>该命令扫描源服务器，更新软件包列表。最好定期运行这一命令以确保软件包列表是最新的，<strong>或者在安装和升级软件之前执行该命令</strong></p>
+<h3 id="5-4-APT-安装"><a href="#5-4-APT-安装" class="headerlink" title="5.4 APT 安装"></a>5.4 APT 安装</h3><p>安装命令：<code>apt-get install 包名</code></p>
+<h3 id="5-5-APT-升级"><a href="#5-5-APT-升级" class="headerlink" title="5.5 APT 升级"></a>5.5 APT 升级</h3><p>升级命令：</p>
+<ul>
+<li><code>apt-get upgrade</code><ul>
+<li>更新所有已安装软件。只是简单的更新包，不管这些依赖，它不能添加新的软件包，或是删除软件包，并且不更改相应软件的配置文件</li>
+</ul>
+</li>
+<li><code>apt-get dist-upgrade</code><ul>
+<li>可以根据依赖关系的变化，添加软件包，删除软件包，并且更改相应软件的配置文件，包括升级系统版本</li>
+</ul>
+</li>
+</ul>
+<h3 id="5-6-APT-卸载"><a href="#5-6-APT-卸载" class="headerlink" title="5.6 APT 卸载"></a>5.6 APT 卸载</h3><p>卸载命令：</p>
+<ul>
+<li><p><code>apt-get remove 包名</code></p>
+<ul>
+<li>删除指定软件，但是保留配置文件</li>
+</ul>
+</li>
+<li><p><code>apt-get --purge remove 包名</code></p>
+<ul>
+<li>删除指定软件，同时删除配置文件</li>
+</ul>
+</li>
+<li><p><code>apt-get autoremove</code></p>
+<ul>
+<li>删除系统内部不需要的依赖软件(一般指安装其他软件包时通过依赖安装的软件包)。该操作可能存在误删，无特殊需求尽量不要执行该命令</li>
+</ul>
+</li>
+</ul>
+<h3 id="5-7-APT-缓存清理"><a href="#5-7-APT-缓存清理" class="headerlink" title="5.7 APT 缓存清理"></a>5.7 APT 缓存清理</h3><p>使用 apt-get 安装软件时，会自动到软件源服务器下载需要的软件包(<code>xxx.deb</code> 文件)，这些文件缓存在 “/var/cache/apt/archives” 目录下，如果不需要这些文件可以执行如下命令将其清除，节约磁盘空间。</p>
+<p>缓存清理命令：</p>
+<ul>
+<li><p><code>apt-get clean</code></p>
+<ul>
+<li>删除/var/cache/apt/archives/ 和 /var/cache/apt/archives/partial/目录下所有”.deb” 文件</li>
+</ul>
+</li>
+<li><p><code>apt-get autoclean</code></p>
+<ul>
+<li>仅删除/var/cache/apt/archives/ 和 /var/cache/apt/archives/partial/目录下旧版本的软件包和无用的软件包文件，保留已安装软件包的 “.deb” 文件</li>
+</ul>
+</li>
+</ul>
+<h3 id="5-8-APT-检查"><a href="#5-8-APT-检查" class="headerlink" title="5.8 APT 检查"></a>5.8 APT 检查</h3><p>检查软件包是否有损坏的依赖：<code>apt-get check 包名</code></p>
+<h3 id="5-9-APT-查询"><a href="#5-9-APT-查询" class="headerlink" title="5.9 APT 查询"></a>5.9 APT 查询</h3><p><strong>apt-cache</strong><br><code>apt-cache</code> 可以查询和显示已安装和可安装软件包的可用信息，它专门工作在本地的数据缓存上，不依赖于软件源的可用性(即离线查询)，而这些缓存可以通过比如 <code>apt-get update</code> 命令来更新。如果距离上一次更新的时间太久，那么它显示的信息可能就会过时。常用命令如下：</p>
+<ul>
+<li><code>apt-cache stats</code>：显示统计信息</li>
+<li><code>apt-cache show 包名</code>：以便于阅读的格式介绍该软件包</li>
+<li><code>apt-cache showpkg 包名</code>：显示软件包常规信息，依赖关系等</li>
+<li><code>apt-cache policy 包名</code>：显示软件包的安装设置状态</li>
+<li><code>apt-cache depends 包名</code>：显示指定软件包所依赖的软件包</li>
+<li><code>apt-cache rdepends 包名</code>：显示软件包的反向依赖关系，即被哪些软件包依赖</li>
+<li><code>apt-cache search 字符串</code>：根据正则表达式搜索软件包列表</li>
+</ul>
+<p><strong>apt-file</strong><br><code>apt-file</code> 软件包查找工具，可以查找某个文件属于哪个软件包。apt-file 个独立的软件包，使用之前需要先安装(<code>apt-get install apt-file</code>)。常用命令如下：</p>
+<ul>
+<li><code>apt-file update</code>：更新软件包的文件库，第一次使用或执行<code>apt-get update</code>后都需执行一次</li>
+<li><code>apt-file search 文件名</code>：查找包含指定文件名的软件包，包括未安装的</li>
+<li><code>apt-file list 包名</code>：显示指定软件包的文件</li>
+</ul>
+<h2 id="6-源码包安装"><a href="#6-源码包安装" class="headerlink" title="6 源码包安装"></a>6 源码包安装</h2><h3 id="6-1-注意事项"><a href="#6-1-注意事项" class="headerlink" title="6.1 注意事项"></a>6.1 注意事项</h3><ul>
+<li><strong>什么情况下选择源码包安装？</strong><br>如果软件包是给大量客户提供访问的，建议源码包安装，因为源码包效率更高，如LAMP环境搭建；如果软件包是给Linux底层使用或者少量客户访问，建议使用rmp包安装，因为rmp包简单，不容易出错</li>
+<li><strong>源码包从哪里来？</strong><br>rpm 包是光盘中直接包含的或者yum源服务器提供，一般不需要单独下载；而源码包是通过官方网站下载的，使用时需要单独下载。</li>
+<li><strong>同一个软件是否可以用软件包方式安装后，同时又用源码包再安装一遍？</strong><br>答案是可以的，因为两种方式的软件安装位置不同，所以安装时相互不会有影响，但是需要注意，两个同时启动时需要修改端口，否则会端口冲突。一般情况下不会同一个软件安装两边，多装一个只会浪费资源</li>
+</ul>
+<h3 id="6-2-安装步骤"><a href="#6-2-安装步骤" class="headerlink" title="6.2 安装步骤"></a>6.2 安装步骤</h3><ol>
+<li><p><strong>下载源码包</strong></p>
+<ul>
+<li>源码包格式一般为 <code>xxx.tar.gz</code>或 <code>xxx.tar.bz2</code>。linux下载工具参考：<a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000022301195">wget 与 curl 命令详解</a></li>
+<li>示例：<code> wget https://archive.apache.org/dist/httpd/httpd-2.2.15.tar.gz</code></li>
+</ul>
+</li>
+<li><p><strong>解压缩</strong></p>
+<ul>
+<li>一般习惯把下载的源码包解压缩到 <code>/usr/local/src/</code> 目录下。解压缩命令参考: <a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000021950993">Linux常用命令</a></li>
+<li>示例：<code>tar -zxvf httpd-2.2.15.tar.gz -C /usr/local/src/</code></li>
+</ul>
+</li>
+<li><p><strong>进入解压目录</strong></p>
+<ul>
+<li>示例：<code>cd /usr/local/src/httpd-2.2.15/</code></li>
+</ul>
+</li>
+<li><p><strong>编译前准备，命令</strong>：<code>./configure --prefix=安装目录</code></p>
+<ul>
+<li><code>--prefix=安装目录</code>：指定安装目录。如果不指定，默认情况下会安装在 <code>/usr/local/包名/bin</code>, <code>/usr/local/包名/lib</code> 等目录下，安装文件比较分散不利于删除</li>
+<li><code>configure</code> 指令是每个源码包都自带的脚本程序(即解压目录下一个名为”configure”的脚本文件)，非系统指令执行时必须指明路径，即”<code>./</code>“表明是当前路径下。执行该指令主要有如下作用：<ul>
+<li>安装之前检测系统环境是否符合安装要求</li>
+<li>定义需要的功能选项。如通过 “–prefix=安装目录” 指定安装目录，其他更多功能选项可以通过 “<code>./configure --help</code>“ 来查看</li>
+<li>创建 <strong>Makefile</strong> 文件并把系统环境检测结果和定义的功能选项写入该文件，后续的编译和安装都需要依赖这个文件的内容</li>
+</ul>
+</li>
+<li>示例：<code>./configure --prefix=/usr/local/apache2</code></li>
+</ul>
+</li>
+<li><p><strong>编译，命令</strong>：<code>make</code></p>
+<ul>
+<li><code>make</code> 会调用 <code>gcc</code> 编译器，并读取 Makefile 文件中的信息进行系统软件编译。编译的目的就是把源码程序转变为能被 Linux 识别的可执行文件，这些可执行文件保存在当前目录下。编译过程较为消耗时间，需要耐心等待</li>
+</ul>
+</li>
+<li><p><strong>报错清空编译内容(非必须步骤)，命令</strong>：<code>make clean</code></p>
+<ul>
+<li>如果在执行 “<code>./configure</code>“ 或者 “<code>make</code>“ 命令时报错，解决报错问题后，需要重新执行命令时一定要先执行一下 “<code>make clean</code>“ 命令，它会清空 Makefile 文件和编译产生的 “.o” 头文件</li>
+</ul>
+</li>
+<li><p><strong>安装，命令</strong>：<code>make install</code></p>
+<ul>
+<li>这个才是真正的安装，一般会输出程序的安装位置。如果忘记指安装目录，则可以把这个命令的执行过程保存下来，以备将来删除软件使用</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>注意：<br>1.执行 <code>./configure</code> 命令时可能会提示缺少 <code>gcc</code> 等依赖程序，所以需要使用 yum 等方式先安装依赖程序即可</p>
+<p>2.并不是所有的源码包安装一定是执行 “<code>./configure</code>“、”<code>make</code>“、”<code>make install</code>“ 这三个命令，只有极少数源码包安装命令可能有些不同，比如 mysql 版本 5.5 以后的源码包安装时，使用 “<code>cmake</code>“  命令替代了 “<code>./configure</code>“。一般源码包解压后都有安装的说明文档，安装之前可以先阅读以下说明文档</p>
+<p>3.一般去第三方官网下载源码包时，也会提供已经编译好的二进制包，这种二进制包里面包括了已经经过编译可以马上运行的程序，所以解压后直接进入 “xxx/bin/“ 目录找到相关命令直接运行即可</p>
+</blockquote>
+<h3 id="6-3-卸载"><a href="#6-3-卸载" class="headerlink" title="6.3 卸载"></a>6.3 卸载</h3><p>通过源码包安装时如果指定了安装目录，比如 “<code>./configure --prefix=/usr/local/apache2</code>“，卸载时只需要删除整个安装目录就可以了 “<code>rm -rf /usr/local/apache2</code>“，而且是100%卸载，不会像windows那样经常会残留那多注册表之类的垃圾。</p>
+<p>如果源码包安装时没有指定安装目录，那么安装软件生成的文件会分别存储在 /usr/local/ 下的 bin、lib、etc 等目录下，删除起来就比较麻烦一点了。所以建议源码包安装一定要指定安装目录，方便卸载。</p>
+ 
+      <!-- reward -->
+      
+      <div id="reword-out">
+        <div id="reward-btn">
+          打赏
+        </div>
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          
+          本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://blog.taichangwei.com/20200308/linux4/3c087d2cbe86.html" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/apt/" rel="tag">apt</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/rpm/" rel="tag">rpm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/yum/" rel="tag">yum</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/20200501/jvmParamType/218e2c7235be.html" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            JVM参数类型
+          
+        </div>
+      </a>
+    
+    
+      <a href="/20200305/linux3/79cf394d63e3.html" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">wget与curl 命令详解</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "E5OOqIsMNkJ1drMqHgC0Pb2R-gzGzoHsz",
+    app_key: "j5iMiXclL4PzAvAKYj50aulE",
+    path: window.location.pathname,
+    avatar: "monsterid",
+    placeholder: "给我的文章加点评论吧~",
+    recordIP: true,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2019-2020
+        <i class="ri-heart-fill heart_icon"></i> taichangwei
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        由 <a href="https://hexo.io" target="_blank">Hexo</a> 强力驱动
+        <span class="division">|</span>
+        主题 - <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></s>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://v1.cnzz.com/z_stat.php?id=1279456387&amp;web_id=1279456387'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side1.png" alt="飞"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/friends">友链</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://taicw-blog.oss-cn-beijing.aliyuncs.com/common/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://taicw-blog.oss-cn-beijing.aliyuncs.com/common/weichatpay.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+
+<script src="/js/clickBoom2.js"></script>
+
+
+<!-- CodeCopy -->
+
+
+<link rel="stylesheet" href="/css/clipboard.css">
+
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+<!-- CanvasBackground -->
+
+
+    
+  </div>
+</body>
+
+</html>
