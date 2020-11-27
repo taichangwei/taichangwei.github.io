@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+
+
+<head>
+  <meta charset="utf-8" />
+   
+  <meta name="keywords" content="java,博客,技术分享" />
+   
+  <meta name="description" content="分享学习心得，记录技术成长之路" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="google-site-verification" content="6PdDXp1HiBYOLkCarskqmK02dk0ftfxa7N1J-Em2fes" />
+  <meta name="baidu-site-verification" content="code-qU3aOUJvyN" />
+  <title>
+    wget与curl 命令详解 |  飞
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  
+
+  
+
+<link rel="alternate" href="/atom.xml" title="飞" type="application/atom+xml">
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    
+      
+      <canvas width="1777" height="841"
+        style="position: fixed; left: 0px; top: 0px; z-index: 99999; pointer-events: none;"></canvas>
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-wget与curl-命令详解"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  wget与curl 命令详解
+</h1>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/linux/">linux</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">3k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">12 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h2 id="wget-命令"><a href="#wget-命令" class="headerlink" title="wget 命令"></a>wget 命令</h2><p><strong>wget命令</strong>用来从指定的URL下载文件。wget非常稳定，它在带宽很窄的情况下和不稳定网络中有很强的适应性，如果是由于网络的原因下载失败，wget会不断的尝试，直到整个文件下载完毕。如果是服务器打断下载过程，它会再次联到服务器上从停止的地方继续下载。这对从那些限定了链接时间的服务器上下载大文件非常有用。</p>
+<a id="more"></a>
+
+<p>命令格式：<code>wget [选项] URL资源</code></p>
+<p><strong>1. 下载单个文件</strong></p>
+<ul>
+<li><code>wget http://www.example.com/testfile.zip</code></li>
+</ul>
+<p>下载的文件并保存在当前目录，在下载的过程中会显示进度条，包含（下载完成百分比，已经下载的字节，当前下载速度，剩余下载时间）</p>
+<p><strong>2. 下载并以不同的文件名保存</strong></p>
+<ul>
+<li><code>wget -O myfile.zip http://www.example.com/testfile.zip</code> <ul>
+<li><code>-O 自定义文件名</code>：重命名下载的文件</li>
+</ul>
+</li>
+</ul>
+<p>如果不指定”-O” 选项，wget默认会以 url 路径最后一个 “<code>/</code>“ 的后面全部字符为下载的文件名，如<code>wget http://www.example.com/testfile?id=123</code>，下载后的文件名就为 <code>testfile?id=123</code></p>
+<p><strong>3. 断点续传</strong></p>
+<ul>
+<li><code>wget -c http://www.example.com/testfile.zip</code><ul>
+<li><code>-c</code>：继续接着执行上次未下载完的任务</li>
+</ul>
+</li>
+</ul>
+<p>当下载的文件特别大或者网络原因，文件没有下载完连接就已经被断开，使用 <code>-c</code> 选项可以在网络连接恢复时接着上次的下载任务继续下载，而不需要重头开始下载文件</p>
+<blockquote>
+<p>wget默认重试20次连接下载文件，如果网络一直有问题下载可能失败。如果需要的话，你可以使用<code>--tries</code>增加重试次数。例如设置最多重试40次：<code>wget --tries=40 http://www.example.com/testfile.zip</code></p>
+</blockquote>
+<p><strong>4. 后台下载</strong></p>
+<ul>
+<li><code>wget -b http://www.example.com/testfile.zip</code><ul>
+<li><code>-b</code>：以后台运行的方式下载</li>
+</ul>
+</li>
+</ul>
+<p>对于下载非常大的文件不能及时下载完时，可以进行后台下载。后台下载时会在当前下载目录下创建一个 “wget-log” 文件记录下载日志，可以使用 <code>tail -f wget-log</code> 命令查看下载进度</p>
+<p><strong>5. 带宽控制和下载配额</strong></p>
+<ul>
+<li><code>wget --limit-rate=下载速度 http://www.example.com/testfile.zip</code><ul>
+<li><code>--limit-rate=下载速度</code>：限定不超过指定的下载速度。例如：–limit-rate=300k</li>
+</ul>
+</li>
+</ul>
+<p>当你执行wget的时候，它默认会占用全部可能的宽带下载，但是当你准备下载一个大文件，而你还需要下载其它文件时就有必要限速了。</p>
+<p>如果还需要限制下载配额，可使用选项 “<code>-Q 下载配额</code>“，下载数据超过了指定配额会停止下载。注意，该选项对于单个文件下载无效，只适用于<strong>多文件下载</strong>或<strong>递归下载</strong>，例如：<code>wget -Q 10m -i dowload.txt</code>，如果不指定下载配额会下载download.txt文件包含的所有url，如果指定了下载配额为10m，下载数据超过了10m会停止后面url的下载（一个文件正在下载过程中下载数据超过了下载配额会继续完成该文件的下载不会立即停止下载）。</p>
+<p><strong>6. 多文件下载</strong></p>
+<ul>
+<li><code>wget -i url文件</code><ul>
+<li><code>-i url文件</code>：从指定文件获取要下载的URL地址</li>
+</ul>
+</li>
+</ul>
+<p>如果有多个url资源需要下载，那么可以先生成一个文件，把下载地址的url按行写入该文件，然后使用 “-i” 选项指定该文件就可以批量下载了</p>
+<p><strong>7. 密码认证下载</strong></p>
+<ul>
+<li><code>wget --http-user=USER --http-password=PASS http://www.example.com/testfile.zip</code><ul>
+<li><code>--http-user=USER</code>：设置 http 用户名为 USER</li>
+<li><code>--http-password=PASS</code>：设置 http 密码为 PASS</li>
+<li><code>--ftp-user=USER</code>：设置 ftp 用户名为 USER</li>
+<li><code>--ftp-password=PASS</code>：设置 ftp 密码为 PASS</li>
+</ul>
+</li>
+</ul>
+<p>对于需要证书做认证的网站，就只能利用其他下载工具了，例如curl</p>
+<p><strong>8. 递归下载</strong></p>
+<ul>
+<li><code>wget -r http://www.example.com/path1/path2/</code><ul>
+<li><code>-r</code>：递归在下整个站点（<a target="_blank" rel="noopener" href="http://www.example.com)资源/">www.example.com）资源</a></li>
+<li><code>-nd</code>：递归下载时不创建一层一层的目录，把所有的文件下载到当前目录；不指定该选项默认按照资源在站点位置创建相应目录</li>
+<li><code>-np</code>：递归下载时不搜索上层目录，只在当前路径path2下进行下载；不指定该选项默认搜素整个站点</li>
+<li><code>-A 后缀名</code>：指定要下载文件的后缀名，多个后缀名之间使用逗号进行分隔</li>
+<li><code>-R 后缀名</code>：排除要下载文件的后缀名，多个后缀名之间使用逗号进行分隔</li>
+<li><code>-L</code>：递归时不进入其它主机。不指定该选项的话，如果站点包含了外部站点的链接，这样可能会导致下载内容无限大</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>示例，只下载path2路径下的所有pdf和png文件，不创建额外目录全都保存在当前下载目录下:<br><code>wget -r -nd -np -A pdf,png http://www.example.com/path1/path2/</code></p>
+</blockquote>
+<h2 id="curl-命令"><a href="#curl-命令" class="headerlink" title="curl 命令"></a>curl 命令</h2><p><strong>curl命令</strong>是一个利用URL规则在命令行下工作的文件传输工具。它支持文件的上传和下载，所以是综合传输工具，但按传统，习惯称curl为下载工具。作为一款强力工具，curl支持包括HTTP、HTTPS、ftp等众多协议，还支持POST、cookies、认证、从指定偏移处下载部分文件、用户代理字符串、限速、文件大小、进度条等特征。做网页处理流程和数据检索自动化，curl可以祝一臂之力。</p>
+<h3 id="与wget类似的下载功能"><a href="#与wget类似的下载功能" class="headerlink" title="与wget类似的下载功能"></a>与wget类似的下载功能</h3><p><strong>1. 单个文件下载</strong></p>
+<ul>
+<li><code>curl [-o 自定义文件名|-O] http://www.example.com/index.html</code><ul>
+<li><code>-o 自定义文件名</code>：把服务器响应输出到指定文件</li>
+<li><code>-O</code>：与<code>-o</code>选项作用一样，区别在于以 url 路径最后一个”/“之后的部分作为文件名</li>
+</ul>
+</li>
+</ul>
+<p>如果这两个选项都不写，curl 默认会把服务器响应内容输出到终端</p>
+<p><strong>2. 断点续传</strong></p>
+<ul>
+<li><code>curl -O -C 偏移量 http://www.example.com/testfile.zip</code><ul>
+<li><code>-C 偏移量</code>：从指定的偏移量处继续下载，偏移量以字节为单位</li>
+</ul>
+</li>
+</ul>
+<p>如果让curl自动推断出正确的续传位置可以使用 “<code>-</code>“ 代替偏移量，例如：<br><code>curl -O -C - http://www.example.com/testfile.zip</code></p>
+<p><strong>3. 带宽控制和下载配额</strong></p>
+<ul>
+<li><code>curl -O --limit-rate 下载速度 http://www.example.com/testfile.zip</code><ul>
+<li><code>--limit-rate 下载速度</code>：限定不超过指定的下载速度。例：–limit-rate 500k</li>
+<li><code>--max-filesize 下载配额</code>：指定最大可下载文件大小</li>
+</ul>
+</li>
+</ul>
+<h3 id="处理复杂的web请求"><a href="#处理复杂的web请求" class="headerlink" title="处理复杂的web请求"></a>处理复杂的web请求</h3><p><strong>1. 自动跳转</strong></p>
+<ul>
+<li><code>curl -L http://www.example.com</code><ul>
+<li><code>-L</code>：自动跳转到重定向链接(Location)<br>有些链接访问时会自动跳转(响应状态码为3xx)，<code>-L</code>参数会让 HTTP 请求跟随服务器的重定向。例如：访问 “<a target="_blank" rel="noopener" href="http://a.com&quot;/">http://a.com&quot;</a> 会重定向到 “<a target="_blank" rel="noopener" href="http://b.com&quot;,使用&quot;-l&quot;选项会返回/">http://b.com&quot;，使用&quot;-L&quot;选项会返回</a> “<a target="_blank" rel="noopener" href="http://b.com&quot;/">http://b.com&quot;</a> 的响应内容</li>
+</ul>
+</li>
+</ul>
+<p><strong>2. 显示响应头信息</strong></p>
+<ul>
+<li><code>curl -i http://www.example.com</code><ul>
+<li><code>-i</code>：输出包含响应头信息</li>
+<li><code>-I</code>：输出仅包含响应头信息，不包含响应内容</li>
+</ul>
+</li>
+</ul>
+<p><strong>3. 显示通信过程</strong></p>
+<ul>
+<li><code>curl -v http://www.example.com</code><ul>
+<li><code>-v</code>：显示一次http通信的整个过程，包括端口连接和http request头信息</li>
+</ul>
+</li>
+</ul>
+<p>如果还需要查看额外的通信信息，还可以使用选项 “<code>--trace 输出文件</code>“ 或者 “<code>--trace-ascii 输出文件</code>“，例如：<code>curl --trace-ascii output.txt http://www.example.com</code>，打开文件 “output.txt”可以查看结果。</p>
+<p><strong>4. 指定http请求方式</strong></p>
+<ul>
+<li><code>curl -X 请求方式 http://www.example.com/test</code><ul>
+<li><code>-X 请求方式</code>：指定http请求方式(GET|POST|DELETE|PUT等)。默认是”GET”</li>
+</ul>
+</li>
+</ul>
+<p><strong>5. 添加http请求头</strong></p>
+<ul>
+<li><code>curl -H &#39;kev:value&#39; http://www.example.com/test</code><ul>
+<li><code>-H &#39;kev:value&#39;</code>：添加http请求头。例：<code>-H &#39;Content-Type:application/json&#39;</code><br>添加多个请求头，<code>-H</code> 选项重复多次即可。例如：<br><code>curl -H &#39;Accept-Language: en-US&#39; -H &#39;Secret-Message: xyzzy&#39; http://www.example.com/test</code></li>
+</ul>
+</li>
+</ul>
+<p><strong>6. 传递请求参数</strong></p>
+<ul>
+<li><code>curl -X POST -d &#39;参数&#39; http://www.example.com/test</code><ul>
+<li><code>-d &#39;参数&#39;</code>：指定POST请求体。参数形式可以是 “k1=v1&amp;k2=v2”, 也可以是json串</li>
+<li><code>--data-urlencode &#39;参数&#39;</code>：与 <code>-d</code> 相同，区别在于会自动将发送的数据进行 URL 编码</li>
+</ul>
+</li>
+</ul>
+<p>使用 <code>-d</code> 参数以后，HTTP 请求会自动加上标头”<code>Content-Type:application/x-www-form-urlencoded</code>“，并且会自动将请求转为 POST 方法，因此可以省略 “<code>-X POST</code>“。如果要发送的请求体为json串，需要指定”Content-Type:application/json”，例如：<br><code>curl -d &#39;&#123;&quot;user&quot;:&quot;zhangsan&quot;, &quot;password&quot;:&quot;123456&quot;&#125;&#39; -H &#39;Content-Type:application/json&#39; http://www.example.com/login</code></p>
+<blockquote>
+<p>参数较多时，可以下把参数数据保存到本地文本中，然后从文本中读取参数数据。例如：<br><code>curl -d &#39;@requestData.txt&#39; -H &#39;Content-Type:application/json&#39; http://www.example.com/login</code></p>
+</blockquote>
+<blockquote>
+<p>如果要以GET请求方式发送表单数据，可以直接把参数直接追加url之后。例如：<br><code>curl http://www.example.com/login?user=zhansan&amp;password=123456</code></p>
+</blockquote>
+<p><strong>7. 文件上传</strong></p>
+<ul>
+<li><code>curl -F &#39;file=@文件&#39; https://www.example.com/test</code><ul>
+<li><code>-F &#39;file=@文件&#39;</code>：模拟http表单向服务器上传文件。更多参数形式：<code>file=@文件;name1=value1;name2=value2</code></li>
+</ul>
+</li>
+</ul>
+<p>文件上传时 <code>-F</code> 选项默认会给 HTTP 请求头加上 <code>Content-Type: multipart/form-data</code>，默认文件MIME类型为 <code>application/octet-stream</code></p>
+<blockquote>
+<p><strong>指定上传文件 MIME 类型</strong>。下面示例指定MIME类型为”image/png”<br><code>curl -F &#39;file=@photo.png;type=image/png&#39; https://google.com/profile</code></p>
+<p><strong>指定上传文件名</strong>。下面示例中原始文件名为”photo.png”，但是服务器接收到的文件名为 “me.png”<br><code>curl -F &#39;file=@photo.png;filename=me.png&#39; https://google.com/profile</code></p>
+</blockquote>
+<p><strong>8. 设置来源网址</strong></p>
+<ul>
+<li><code>curl -e &#39;源网址&#39; https://www.example.com</code><ul>
+<li><code>-e &#39;源网址&#39;</code> 或 <code>--referer &#39;源网址&#39;</code>：设置来源网址，即http请求头的 <code>Referer</code>字段。和 <code>-H</code> 选项直接设置请求头 “Referer” 字段等效</li>
+</ul>
+</li>
+</ul>
+<p><strong>9. 设置客户端用户代理</strong></p>
+<ul>
+<li><code>curl -A &#39;代理信息&#39; https://www.example.com</code><ul>
+<li><code>-A &#39;代理信息&#39;</code> 或 <code>--user-agent &#39;代理信息&#39;</code>：设置客户端用户代理，即http请求头的 <code>User-Agent</code>字段。和 <code>-H</code> 选项直接设置请求头 “User-Agent” 字段等效</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>将”User-Agent”改成 Chrome 浏览器，示例：<br><code>curl -A &#39;Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Mobile Safari/537.36&#39; https://www.example.com</code></p>
+<p>移出 “User-Agent” 请求头，示例：<br><code>curl -A &#39;&#39; https://www.example.com</code></p>
+</blockquote>
+<p><strong>10. 设置cookie</strong></p>
+<ul>
+<li><code>curl -b &#39;参数&#39; https://www.example.com</code><ul>
+<li><code>-b &#39;参数&#39;</code> 或 <code>--cookie &#39;参数&#39;</code>：设置cookie参数。参数形式可以是 <code>key1=value1;key2=value2...</code>，也可以是一个文件</li>
+<li><code>-c 文件</code>：把服务器响应的cookie信息写入到文件中</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>至于具体的cookie的值，可以从http response头信息的 “Set-Cookie” 字段中得到，可以保存服务器返回的cookie信息到文件，再用这文件作为下次请求的cookie信息，如下：<br><code>curl -c cookies.txt http://example.com</code><br><code>curl -b cookies.txt http://example.com</code></p>
+</blockquote>
+<p><strong>11. 设置服务器认证的用户名和密码</strong></p>
+<ul>
+<li><code>curl -u &#39;user[:password]&#39; https://www.example.com</code><ul>
+<li><code>-u &#39;user[:password]&#39;</code>：设置服务器认证的用户名和密码。只有用户名时，执行curl后提示输入密码</li>
+</ul>
+</li>
+</ul>
+<h2 id="wget与curl对比"><a href="#wget与curl对比" class="headerlink" title="wget与curl对比"></a>wget与curl对比</h2><p>wget 是一个独立的下载程序，无需额外的资源库，它也允许你下载网页中或是 FTP 目录中的任何内容, 能享受它超凡的下载速度，简单直接。<br>curl是一个多功能工具，是libcurl这个库支持的。它可以下载网络内容，但同时它也能做更多别的事情。</p>
+<p>从用途方面，wget倾向于网络文件下载；curl倾向于网络接口调试，相当于一个无图形界面的 PostMan 工具</p>
+<hr>
+<p>参考文章：<br><a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2011/09/curl.html">http://www.ruanyifeng.com/blog/2011/09/curl.html</a></p>
+ 
+      <!-- reward -->
+      
+      <div id="reword-out">
+        <div id="reward-btn">
+          打赏
+        </div>
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          
+          本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://blog.taichangwei.com/20200305/linux3/79cf394d63e3.html" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/curl/" rel="tag">curl</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/wget/" rel="tag">wget</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/20200501/jvmParamType/218e2c7235be.html" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            JVM参数类型
+          
+        </div>
+      </a>
+    
+    
+      <a href="/20200228/linux2/20f52a23110c.html" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">Linux常用命令</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "E5OOqIsMNkJ1drMqHgC0Pb2R-gzGzoHsz",
+    app_key: "j5iMiXclL4PzAvAKYj50aulE",
+    path: window.location.pathname,
+    avatar: "monsterid",
+    placeholder: "给我的文章加点评论吧~",
+    recordIP: true,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2019-2020
+        <i class="ri-heart-fill heart_icon"></i> taichangwei
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        由 <a href="https://hexo.io" target="_blank">Hexo</a> 强力驱动
+        <span class="division">|</span>
+        主题 - <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></s>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://v1.cnzz.com/z_stat.php?id=1279456387&amp;web_id=1279456387'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side1.png" alt="飞"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/friends">友链</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://taicw-blog.oss-cn-beijing.aliyuncs.com/common/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://taicw-blog.oss-cn-beijing.aliyuncs.com/common/weichatpay.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+
+<script src="/js/clickBoom2.js"></script>
+
+
+<!-- CodeCopy -->
+
+
+<link rel="stylesheet" href="/css/clipboard.css">
+
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+<!-- CanvasBackground -->
+
+
+    
+  </div>
+</body>
+
+</html>
