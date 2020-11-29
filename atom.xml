@@ -6,7 +6,7 @@
   <link href="https://blog.taichangwei.com/atom.xml" rel="self"/>
   
   <link href="https://blog.taichangwei.com/"/>
-  <updated>2020-11-23T14:38:34.883Z</updated>
+  <updated>2020-11-29T09:52:37.885Z</updated>
   <id>https://blog.taichangwei.com/</id>
   
   <author>
@@ -15,6 +15,39 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>JVM之字节码与类加载</title>
+    <link href="https://blog.taichangwei.com/20200516/jvm1/24b40c8cd2e9.html"/>
+    <id>https://blog.taichangwei.com/20200516/jvm1/24b40c8cd2e9.html</id>
+    <published>2020-05-16T09:45:07.000Z</published>
+    <updated>2020-11-29T09:52:37.885Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;类加载与字节码技术 :&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;类文件结构&lt;/li&gt;
+&lt;li&gt;节码指令&lt;/li&gt;
+&lt;li&gt;编译期处理&lt;/li&gt;
+&lt;li&gt;加载阶段&lt;/li&gt;
+&lt;li&gt;类加载器&lt;/li&gt;
+&lt;li&gt;运行期优化  &lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src=&quot;https://taicw-blog.oss-cn-beijing.aliyuncs.com/202001/00.png?x-oss-process=style/watermarking&quot;&gt;&lt;/p&gt;
+&lt;h1 id=&quot;1-类文件结构&quot;&gt;&lt;a href=&quot;#1-类文件结构&quot; class=&quot;headerlink&quot; title=&quot;1. 类文件结构&quot;&gt;&lt;/a&gt;1. 类文件结构&lt;/h1&gt;&lt;p&gt;Class文件是一组以8位字节为基础的二进制流，各个数据项目严格按照顺序紧凑的排列在Class文件之中。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="jvm" scheme="https://blog.taichangwei.com/categories/jvm/"/>
+    
+    
+    <category term="jvm" scheme="https://blog.taichangwei.com/tags/jvm/"/>
+    
+    <category term="类加载" scheme="https://blog.taichangwei.com/tags/%E7%B1%BB%E5%8A%A0%E8%BD%BD/"/>
+    
+    <category term="字节码" scheme="https://blog.taichangwei.com/tags/%E5%AD%97%E8%8A%82%E7%A0%81/"/>
+    
+  </entry>
   
   <entry>
     <title>JVM参数类型</title>
