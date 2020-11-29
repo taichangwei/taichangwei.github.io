@@ -145,6 +145,69 @@
     
     
     <article
+  id="post-Linux常用命令"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/20200228/linux2/20f52a23110c.html"
+    >Linux常用命令</a> 
+</h2>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/linux/">linux</a>
+  </div>
+   
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h2 id="1-命令的基本格式"><a href="#1-命令的基本格式" class="headerlink" title="1 命令的基本格式"></a>1 命令的基本格式</h2><h3 id="1-1-命令的提示符"><a href="#1-1-命令的提示符" class="headerlink" title="1.1 命令的提示符"></a>1.1 命令的提示符</h3><p><strong>[root@localhost ~]#</strong></p>
+<ul>
+<li><code>[]</code>：这是提示符的分隔符号，没有特殊含义。</li>
+<li><code>root</code>：显示的是当前的登录用户， 目前使用的是root用户登录。</li>
+<li><code>@</code>：分隔符号，没有特殊含义。</li>
+<li><code>localhost</code>：当前系统的简写主机名（完整主机名是 localhost.localdomain）。</li>
+<li><code>~</code>：代表用户当前所在的目录，此例中用户当前所在的目录是家目录。</li>
+<li><code>#</code>：命令提示符。超级用户是#，普通用户是$</li>
+</ul> 
+      <a class="article-more-link" href="/20200228/linux2/20f52a23110c.html"
+        >阅读更多...</a
+      >
+       
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%91%BD%E4%BB%A4/" rel="tag">命令</a></li></ul>
+
+    </footer>
+  </div>
+
+    
+ 
+   
+</article>
+
+    
+    <article
   id="post-Linux分区与挂载"
   class="article article-type-post"
   itemscope
@@ -352,63 +415,6 @@
 <p>方法引用和lambda表达式拥有相同的特性，它们都需要代表一个<strong>目标类型</strong>，并需要被转化为函数式接口的实例，不过我们并不需要为方法引用提供方法体，我们可以直接通过方法名称引用已有方法方。<strong>法引用要使用到操作符 “::”，左边是类名或者对象名，右边是方法名或者关键字<code>new</code></strong></p>
 <p>首先被引用方法的返回值类型要和函数式接口抽象方法的返回值类型一致，至于参数列表要根据每种引用方式而定。</p> 
       <a class="article-more-link" href="/20190202/lambda2/076a298db052.html"
-        >阅读更多...</a
-      >
-       
-      <!-- reward -->
-      
-    </div>
-    
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
-
-    </footer>
-  </div>
-
-    
- 
-   
-</article>
-
-    
-    <article
-  id="post-lambda表达式（一）——函数式接口"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/20190201/lambda1/c673d3a38bb1.html"
-    >lambda表达式（一）——函数式接口</a> 
-</h2>
- 
-
-    </header>
-     
-    <div class="article-meta">
-      
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/lambda/">lambda</a>
-  </div>
-   
-    </div>
-      
-    <div class="article-entry" itemprop="articleBody">
-       
-  <h2 id="1-什么是lambda"><a href="#1-什么是lambda" class="headerlink" title="1.什么是lambda?"></a>1.什么是lambda?</h2><p>如果我们想要起一个线程来打印一串字符串，我们之前的写法通常是这样：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">ExecutorService executorService = Executors.newFixedThreadPool(<span class="number">3</span>);</span><br><span class="line">executorService.execute(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;hello world!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line">executorService.shutdown();</span><br></pre></td></tr></table></figure>
-<p>使用lambda表达式后，可以改写为这个样：</p> 
-      <a class="article-more-link" href="/20190201/lambda1/c673d3a38bb1.html"
         >阅读更多...</a
       >
        

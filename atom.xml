@@ -74,6 +74,33 @@
   </entry>
   
   <entry>
+    <title>JVM系列之内存结构（一）</title>
+    <link href="https://blog.taichangwei.com/20200425/jvm1/9a318b08ecfc.html"/>
+    <id>https://blog.taichangwei.com/20200425/jvm1/9a318b08ecfc.html</id>
+    <published>2020-04-25T14:50:45.000Z</published>
+    <updated>2020-11-29T15:45:01.675Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;1-什么是-JVM？&quot;&gt;&lt;a href=&quot;#1-什么是-JVM？&quot; class=&quot;headerlink&quot; title=&quot;1. 什么是 JVM？&quot;&gt;&lt;/a&gt;1. 什么是 JVM？&lt;/h1&gt;&lt;h2 id=&quot;1-1-定义&quot;&gt;&lt;a href=&quot;#1-1-定义&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="jvm" scheme="https://blog.taichangwei.com/categories/jvm/"/>
+    
+    
+    <category term="jvm" scheme="https://blog.taichangwei.com/tags/jvm/"/>
+    
+    <category term="jvm内存结构" scheme="https://blog.taichangwei.com/tags/jvm%E5%86%85%E5%AD%98%E7%BB%93%E6%9E%84/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Linux软件安装归纳</title>
     <link href="https://blog.taichangwei.com/20200308/linux4/3c087d2cbe86.html"/>
     <id>https://blog.taichangwei.com/20200308/linux4/3c087d2cbe86.html</id>
