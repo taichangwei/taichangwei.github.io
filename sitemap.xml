@@ -158,14 +158,14 @@
   </url>
   
   <url>
-    <loc>https://blog.taichangwei.com/tags/java/</loc>
+    <loc>https://blog.taichangwei.com/tags/bug/</loc>
     <lastmod>2020-11-29</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://blog.taichangwei.com/tags/bug/</loc>
+    <loc>https://blog.taichangwei.com/tags/java/</loc>
     <lastmod>2020-11-29</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -272,14 +272,14 @@
   </url>
   
   <url>
-    <loc>https://blog.taichangwei.com/categories/lambda/</loc>
+    <loc>https://blog.taichangwei.com/categories/%E9%9A%8F%E7%AC%94/</loc>
     <lastmod>2020-11-29</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://blog.taichangwei.com/categories/%E9%9A%8F%E7%AC%94/</loc>
+    <loc>https://blog.taichangwei.com/categories/lambda/</loc>
     <lastmod>2020-11-29</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>

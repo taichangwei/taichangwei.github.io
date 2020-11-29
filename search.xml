@@ -971,6 +971,8 @@
     <title>JVM系列之内存结构（一）</title>
     <url>/20200425/jvm1/9a318b08ecfc.html</url>
     <content><![CDATA[<h1 id="1-什么是-JVM？"><a href="#1-什么是-JVM？" class="headerlink" title="1. 什么是 JVM？"></a>1. 什么是 JVM？</h1><h2 id="1-1-定义"><a href="#1-1-定义" class="headerlink" title="1.1 定义"></a>1.1 定义</h2><p>JVM，即Java Virtual Machine，JAVA程序的<strong>运行环境</strong>（JAVA二进制字节码的运行环境）</p>
+<a id="more"></a>
+
 <h2 id="1-2-好处"><a href="#1-2-好处" class="headerlink" title="1.2 好处"></a>1.2 好处</h2><ol>
 <li>一次编写，到处运行的基石</li>
 <li>自动内存管理，垃圾回收功能</li>
