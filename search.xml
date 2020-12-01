@@ -890,6 +890,482 @@
       </tags>
   </entry>
   <entry>
+    <title>JVM系列之垃圾回收（二）</title>
+    <url>/20200503/jvm2/c90f3372b2ba.html</url>
+    <content><![CDATA[<h1 id="1-如何判断对象可以垃圾回收"><a href="#1-如何判断对象可以垃圾回收" class="headerlink" title="1. 如何判断对象可以垃圾回收"></a>1. 如何判断对象可以垃圾回收</h1><h2 id="1-1-引用计数法"><a href="#1-1-引用计数法" class="headerlink" title="1.1 引用计数法"></a>1.1 引用计数法</h2><p>统计对象被引用的个数，当引用个数为零，即没有地方在使用该对象时，则可以进行垃圾回收。</p>
+<p><strong>弊端</strong>：当两个对象循环引用时，引用计数都是1，导致两个对象都无法释放。比如对象A中引用了对象B，对象B引用计数加 1，同时对象B中又引用了对象A，对象A引用计数也加 1，导致这两个对象永远不会被回收。</p>
+<a id="more"></a>
+
+
+<h2 id="1-2-可达性分析法"><a href="#1-2-可达性分析法" class="headerlink" title="1.2 可达性分析法"></a>1.2 可达性分析法</h2><p>JVM中的垃圾回收器通过<strong>可达性分析</strong>来探索所有存活的对象，即扫描堆中的对象，看能否沿着<strong>GC Root对象为起点</strong>的引用链找到该对象，如果<strong>找不到，则表示可以回收</strong>。</p>
+<p><strong>可以作为GC Root 的对象</strong>：</p>
+<ul>
+<li>虚拟机栈（栈帧中的本地变量表）中引用的对象。　</li>
+<li>方法区中类静态属性引用的对象</li>
+<li>方法区中常量引用的对象</li>
+<li>本地方法栈中JNI（即一般说的Native方法）引用的对象</li>
+</ul>
+<h3 id="1-2-2-五种引用类型"><a href="#1-2-2-五种引用类型" class="headerlink" title="1.2.2 五种引用类型"></a>1.2.2 五种引用类型</h3><p>对于不同的引用类型，垃圾回收时有着不同的处理。java中引用类型一般分为<strong>强引用</strong>、<strong>软引用</strong>、<strong>弱引用</strong>、<strong>虚引用</strong>、<strong>终结器引用</strong>。下面分别介绍这五种引用类型。</p>
+<p><img src="https://taicw-blog.oss-cn-beijing.aliyuncs.com/202001/1-2-1.png?x-oss-process=style/watermarking"></p>
+<p><strong>— 引用队列</strong></p>
+<p>作用：<strong>用于回收引用自身</strong>。</p>
+<p>当 软引用、弱引用、虚引用、终结器引用所关联的对象被回收时，引用自身可以进入引用队列，然后<strong>ReferenceHandler</strong>线程会对引用队列中的引用进行统一回收处理。</p>
+<p><strong>— 强引用</strong></p>
+<p>强引用就是经常使用的引用类型，<strong>只有所有 GC Roots 对象都不通过【强引用】引用该对象，该对象才能被垃圾回收</strong> 。一般通过赋值null使强引用的对象被回收。如下:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//obj 为强引用</span></span><br><span class="line">Object obj = <span class="keyword">new</span> Object();</span><br><span class="line"><span class="comment">//obj 赋值null后，通过obj(GC Root对象)引用就找不到刚才创建的对象了，随后就会被垃圾回收</span></span><br><span class="line">obj = <span class="keyword">null</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>— 软引用 (SoftReference)</strong></p>
+<p>软引用对应的java类是 <code>java.lang.ref.SoftReference&lt;T&gt;</code> 。<strong>当对象仅有软引用可达到，在垃圾回收后，内存仍不足时会再次出发垃圾回收，回收该对象</strong>，可以配合<strong>引用队列</strong>来释放软引用自身 。比如上图中的 A2 对象，如果断开B对象的强引用，只有软引用指向A2，垃圾回收时如果内存不足，A2对象也会被回收，然后软引用进入引用队列。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Object obj = <span class="keyword">new</span> Object();</span><br><span class="line"><span class="comment">//softRef 为软引用</span></span><br><span class="line"><span class="comment">//另一个构造方法 SoftReference(T referent, ReferenceQueue&lt;? super T&gt; q)，可传入引用队列来回收引用自身所占内存</span></span><br><span class="line">SoftReference&lt;Object&gt; softRef= <span class="keyword">new</span> SoftReference&lt;&gt;(obj);</span><br><span class="line"><span class="comment">//如果内存充足，get()返回obj对象；如果内存不足，GC时会回收softRef所关联的obj对象，此时get()返回null</span></span><br><span class="line">softRef.get();</span><br></pre></td></tr></table></figure>
+
+<p><strong>软引用的在实际应用中，一般是为了避免内存溢出的发生</strong>。假如有一批图片资源，需要从磁盘读取并缓存到内存中方便下次读取，而这部分缓存并不是必须的，你不希望这部分缓存太大导致而内存溢出，那么你就可以考虑使用软引用。如下代码，堆内存只有20m，需要读取5张 4m 的图片存入一个list中，分别演示使用强引用与软引用：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.lang.ref.SoftReference;</span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 演示软引用</span></span><br><span class="line"><span class="comment"> * -Xmx20m -XX:+PrintGCDetails -verbose:gc</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GcDemo01</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> _4MB = <span class="number">4</span> * <span class="number">1024</span> * <span class="number">1024</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//strong();</span></span><br><span class="line">        </span><br><span class="line">       soft();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//使用强引用导致堆内存溢出 java.lang.OutOfMemoryError: Java heap space</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">strong</span><span class="params">()</span></span>&#123;</span><br><span class="line">        List&lt;<span class="keyword">byte</span>[]&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++) &#123;</span><br><span class="line">            list.add(<span class="keyword">new</span> <span class="keyword">byte</span>[_4MB]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//使用软引用，当内存不足垃圾回收时list中个别软引用对象所引用的byte[]对象会被回收，所以ref.get()可能返回null</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">soft</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// list --&gt; SoftReference --&gt; byte[]</span></span><br><span class="line">        List&lt;SoftReference&lt;<span class="keyword">byte</span>[]&gt;&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++) &#123;</span><br><span class="line">            SoftReference&lt;<span class="keyword">byte</span>[]&gt; softRef = <span class="keyword">new</span> SoftReference&lt;&gt;(<span class="keyword">new</span> <span class="keyword">byte</span>[_4MB]);</span><br><span class="line">            System.out.println(softRef.get());</span><br><span class="line">            list.add(softRef);</span><br><span class="line">            System.out.println(list.size());</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">&quot;循环结束：&quot;</span> + list.size());</span><br><span class="line">        <span class="keyword">for</span> (SoftReference&lt;<span class="keyword">byte</span>[]&gt; ref : list) &#123;</span><br><span class="line">            System.out.println(ref.get());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>上诉代码使用软引用方式执行，打印日志如下：</p>
+<p><img src="https://taicw-blog.oss-cn-beijing.aliyuncs.com/202001/1-2-2.png?x-oss-process=style/watermarking"></p>
+<p>如果在垃圾回收时发现内存不足，在回收软引用所指向的对象时，<strong>软引用自身不会被回收</strong>，如果想要<strong>回收软引用</strong>自身，需要配合使用<strong>引用队列</strong>。演示代码如下：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> indi.taicw.jvm.gc;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.lang.ref.Reference;</span><br><span class="line"><span class="keyword">import</span> java.lang.ref.ReferenceQueue;</span><br><span class="line"><span class="keyword">import</span> java.lang.ref.SoftReference;</span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 演示软引用, 配合引用队列</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GCDemo02</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> _4MB = <span class="number">4</span> * <span class="number">1024</span> * <span class="number">1024</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        List&lt;SoftReference&lt;<span class="keyword">byte</span>[]&gt;&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 引用队列</span></span><br><span class="line">        ReferenceQueue&lt;<span class="keyword">byte</span>[]&gt; queue = <span class="keyword">new</span> ReferenceQueue&lt;&gt;();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++) &#123;</span><br><span class="line">            <span class="comment">// 关联了引用队列， 当软引用所关联的 byte[]被回收时，软引用自己会加入到 queue 中去</span></span><br><span class="line">            SoftReference&lt;<span class="keyword">byte</span>[]&gt; ref = <span class="keyword">new</span> SoftReference&lt;&gt;(<span class="keyword">new</span> <span class="keyword">byte</span>[_4MB], queue);</span><br><span class="line">            System.out.println(ref.get());</span><br><span class="line">            list.add(ref);</span><br><span class="line">            System.out.println(list.size());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 从队列中获取无用的 软引用对象，并移除</span></span><br><span class="line">        Reference&lt;? extends <span class="keyword">byte</span>[]&gt; poll = queue.poll();</span><br><span class="line">        <span class="keyword">while</span>( poll != <span class="keyword">null</span>) &#123;</span><br><span class="line">            list.remove(poll);</span><br><span class="line">            poll = queue.poll();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;===========================&quot;</span>);</span><br><span class="line">        <span class="keyword">for</span> (SoftReference&lt;<span class="keyword">byte</span>[]&gt; reference : list) &#123;</span><br><span class="line">            System.out.println(reference.get());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>— 弱引用</strong></p>
+<p>弱引用对应的 java 类是 <code>java.lang.ref.WeakReference&lt;T&gt;</code>，弱引用与软引用基本相同，区别是 <strong>仅有弱引用可达该对象时，在垃圾回收时，无论内存是否充足，都会回收弱引用指向的对象</strong>。</p>
+<p><strong>— 虚引用</strong></p>
+<p>虚引用对应的java类是 <code>java.lang.ref.PhantomReference&lt;T&gt;</code>，与 软引用和弱引用 不同的是，<strong>虚引用必须配合引用队列一起使用</strong>，因此只有一个构造方法 “PhantomReference(T referent, ReferenceQueue&lt;? super T&gt; q)”，<strong>且虚引用的get()方法始终返回null</strong>。</p>
+<p>虚引用实际上并不是用来指向java对象的，所以get()方法始终返回null，虚引用主要作用体现在<strong>释放直接内存</strong>。我们在使用<code>ByteBuffer.allocateDirect()</code>申请分配直接内存时，会创建一个虚引用(Cleaner)并且指向ByteBuffer对象，当ByteBuffer对象被回收时，虚引用(Cleaner)会进入引用队列中，然后调用Cleaner#clean()方法来释放直接内存。</p>
+<p><strong>— 终结器引用</strong></p>
+<p>终结器引用对应的java类是 <code>java.lang.ref.FinalReference&lt;T&gt;</code>, 也<strong>必须配合引用队列一起使用</strong>，终结器引用主要作用是 <strong>当对象被真正回收之前，用来调用对象的finalize()方法的</strong>（所有的类都继承Object类，Object类有一个finalize()方法）。</p>
+<p>当一个对象重写了finalize()方法，在垃圾回收时，终结器引用进入引用队列（被引用对象暂时还没有被回收），再由 Finalizer 线程通过终结器引用找到被引用对象并调用它的 finalize()方法，第二次 GC 时才能回收被引用对象 。 </p>
+<blockquote>
+<p>Finalizer 线程优先级比较低，因此finalize()方法被执行的几率比较低，可能会导致资源一直无法释放，所以一般不建议重写finalize()方法来释放资源</p>
+</blockquote>
+<h1 id="2-垃圾回收算法"><a href="#2-垃圾回收算法" class="headerlink" title="2. 垃圾回收算法"></a>2. 垃圾回收算法</h1><h2 id="2-1-标记清除"><a href="#2-1-标记清除" class="headerlink" title="2.1 标记清除"></a>2.1 标记清除</h2><p>分为两个阶段，<strong>标记</strong>：首先标记出要回收的对象；<strong>清理</strong>：垃圾回收器根据标记清除相应的内存空间（清除并不是把内存空间清理0，而是记录下这段内存的起始地址为未使用空间，下次内存分配时直接覆盖这块内存就行了）。</p>
+<p>特点：<strong>容易产生大量内存碎片</strong>。当给大对象分配内存时可能会找不到合适的内存空间，就会导致GC，一旦GC程序就会暂定导致应用的响应速度变慢</p>
+<p><img src="https://taicw-blog.oss-cn-beijing.aliyuncs.com/202001/2-1-1.png?x-oss-process=style/watermarking"></p>
+<h2 id="2-2-标记整理"><a href="#2-2-标记整理" class="headerlink" title="2.2 标记整理"></a>2.2 标记整理</h2><p>分为两个阶段：<strong>标记</strong>：首先标记出要回收的对象；<strong>整理</strong>：移动存活的对象到连续的内存空间。</p>
+<p>特点：<strong>不会造成内存碎片，但是移动需要消耗时间，导致效率低</strong></p>
+<p><img src="https://taicw-blog.oss-cn-beijing.aliyuncs.com/202001/2-1-2.png?x-oss-process=style/watermarking"></p>
+<h2 id="2-3-复制"><a href="#2-3-复制" class="headerlink" title="2.3 复制"></a>2.3 复制</h2><p><strong>把内存空间分为两块大小相等的区域</strong>（FROM/TO），每次只使用其中的一块，当这一块内存空间使用完了，就把<strong>还存活的对象复制到另一块</strong>，然后把这块已使用的内存空间一次清理掉。</p>
+<p>特点：<strong>不会造成内存碎片，是对整个半块内存进行回收不用考虑复杂情况，实现简单、运行高效，但是需要浪费一半的内存空间</strong></p>
+<p><img src="https://taicw-blog.oss-cn-beijing.aliyuncs.com/202001/2-1-3.png?x-oss-process=style/watermarking"></p>
+<h1 id="3-分代垃圾回收"><a href="#3-分代垃圾回收" class="headerlink" title="3. 分代垃圾回收"></a>3. 分代垃圾回收</h1><h2 id="3-1-分代区域划分"><a href="#3-1-分代区域划分" class="headerlink" title="3.1 分代区域划分"></a>3.1 分代区域划分</h2><p>一般情况垃圾回收不会只单单使用 <strong>标记清除、标记整理、复制</strong> 算法中的一种，而是根据情况组合使用这几种算法。</p>
+<p>分代垃圾回收算法，<strong>根据对象存活周期的不同把内存区域分为两大块</strong>，<strong>新生代</strong>和<strong>老年代</strong>，其中新生代又细分为三个区域：<strong>伊甸园区</strong>(Eden)、<strong>幸存区FROM</strong>(Survive-from)、<strong>幸存区TO</strong>(Survive-to)。</p>
+<p><img src="https://taicw-blog.oss-cn-beijing.aliyuncs.com/202001/3-1-1.png?x-oss-process=style/watermarking"></p>
+<p><strong>新生代</strong>对象的特点一般是朝生夕死，每次垃圾回收都会有大批对象死去，只有少量对象存活，所以适合采用<strong>复制算法</strong>进行垃圾回收；</p>
+<p><strong>老年代</strong>对象的特点一般存活率高，没有额外的空间进行分配担保，所以就必须采用<strong>标记清理</strong>或者<strong>标记整理</strong>算法进行垃圾回收。</p>
+<h2 id="3-2-分代垃圾回收过程"><a href="#3-2-分代垃圾回收过程" class="headerlink" title="3.2 分代垃圾回收过程"></a>3.2 分代垃圾回收过程</h2><p><strong>分代垃圾回收的过程如下</strong>：</p>
+<ol>
+<li><p>对象创建时首先会被分配在<strong>伊甸园区</strong></p>
+</li>
+<li><p>当<strong>伊甸园区</strong>的内存不足时，会进行一次新生代的垃圾回收，这时的回收叫做<strong>Minor GC</strong>。Minor GC 的过程就是把<strong>伊甸园区</strong>和<strong>幸存区FROM</strong>的存活对象复制到<strong>幸存区TO</strong>，且<strong>存活对象寿命加1</strong>，然后回收<strong>伊甸园区</strong>和<strong>幸存区FROM</strong>内存空间</p>
+<ul>
+<li>Minor GC 会引发<strong>STW事件</strong> (stop the world)，即暂停其它一切用户线程，等垃圾回收结束，用户线程才恢复运行</li>
+</ul>
+</li>
+<li><p>交换<strong>幸存区FROM</strong>与<strong>幸存区TO</strong>，即把原来的幸存区FROM标记为幸存区TO，把原来的幸存区TO标记为幸存区FROM</p>
+<ul>
+<li>两个幸存区，每次垃圾回收后应该保证其中一个是空的，等待下次垃圾回收时把存活对象复制到该幸存区。一般标记TO区为下次复制存活对象的幸存区</li>
+</ul>
+</li>
+<li><p>一个对象每经历一次Minor GC寿命都会加1，当<strong>对象寿命超过阈值会晋升至老年代</strong>。当老年代空间不足时，就会<strong>触发 FULL GC</strong></p>
+<ul>
+<li><p>可通过参数<code>-XX:MaxTenuringThreshold=threshold</code> 来调整对象从新生代晋升到老年代的阈值(最大只能设置到15)</p>
+</li>
+<li><p>FULL GC 的 STW时间会更久，一般是Minor GC的10倍</p>
+</li>
+</ul>
+</li>
+</ol>
+<p>对象从<strong>新生代进入老年代的时机</strong>，并不是只有寿命达到阈值才能进入老年代，有些情况下即使寿命没有达到也能直接进入老年代：</p>
+<ul>
+<li>Minor GC时如果<strong>幸存区TO容纳不了伊甸园区和幸存区FROM存活的对象</strong>，那么就会使用老年代空间进行分担，这些对象就会直接进入老年代</li>
+<li>当给一个<strong>较大对象分配内存</strong>时，而新生代即使Minor GC后剩余空间还是无法容纳该对象，那么也会直接进入老年代进行存储</li>
+</ul>
+<h1 id="4-垃圾回收器"><a href="#4-垃圾回收器" class="headerlink" title="4. 垃圾回收器"></a>4. 垃圾回收器</h1><h2 id="4-1-相关概念"><a href="#4-1-相关概念" class="headerlink" title="4.1 相关概念"></a>4.1 相关概念</h2><p><strong>串行(serial)收集</strong>：指只有一个垃圾收集线程进行工作，但此时用户线程处于等待状态</p>
+<p><strong>并行(parallel)收集</strong>：指有多条垃圾收集线程并行工作，但此时用户线程处于等待状态</p>
+<p><strong>并发(concurrent)收集</strong>：用户线程与垃圾收集线程同时执行(不一定是并行的也可能会交替执行)，用户线程仍在继续执行，而垃圾收集线程运行在另一个CPU上</p>
+<p><strong>吞吐量</strong>：<strong>单位时间内</strong>CPU用于运行用户代码的时间与CPU总消耗时间的比值（吞吐量 = 运行用户代码时间 / ( 运行用户代码时间 + 垃圾收集时间 )）。例如：虚拟机共运行100分钟，垃圾收集器花掉1分钟，那么吞吐量就是99%</p>
+<p><strong>低延时</strong>：尽可能让<strong>单次垃圾回收</strong>STW的时间最短</p>
+<p>一般<strong>并行收集偏向于吞吐量优先，并发收集偏向于低延时优先</strong>，基于这些特性以及垃圾回收算法常见的垃圾回收器有7种，分别<strong>用于新生代和老年代</strong>，如下图，中间有直线相连的表示它们可以搭配使用</p>
+<p><img src="https://taicw-blog.oss-cn-beijing.aliyuncs.com/202001/4-1-1.png?x-oss-process=style/watermarking"></p>
+<h2 id="4-2-Serial-收集器"><a href="#4-2-Serial-收集器" class="headerlink" title="4.2 Serial 收集器"></a>4.2 Serial 收集器</h2><p><strong>Serial收集器</strong>是最基本的、发展历史最悠久的收集器，用于<strong>新生代垃圾回收</strong>，采用<strong>复制算法</strong>。</p>
+<p><strong>特点：</strong>单线程、简单高效（与其他收集器的单线程相比），对于限定单个CPU的环境来说，Serial收集器由于没有线程交互的开销，专心做垃圾收集自然可以获得最高的单线程手机效率。收集器进行垃圾回收时，必须暂停其他所有的工作线程，直到它结束（Stop The World）。</p>
+<p><strong>应用场景</strong>：适用于Client模式下的虚拟机。</p>
+<p><img src="https://taicw-blog.oss-cn-beijing.aliyuncs.com/202001/4-1-01.png?x-oss-process=style/watermarking"></p>
+<h2 id="4-3-Serial-Old-收集器"><a href="#4-3-Serial-Old-收集器" class="headerlink" title="4.3 Serial Old 收集器"></a>4.3 Serial Old 收集器</h2><p><strong>Serial Old 收集器</strong>是serial收集器的老年代版本，用于<strong>老年代垃圾回收</strong>，采用<strong>标记整理算法</strong>。</p>
+<p><strong>特点</strong>：与serial收集器基本一致</p>
+<p><strong>应用场景</strong>：主要也是使用在Client模式下的虚拟机中。也可在Server模式下使用。</p>
+<h2 id="4-4-ParNew-收集器"><a href="#4-4-ParNew-收集器" class="headerlink" title="4.4 ParNew 收集器"></a>4.4 ParNew 收集器</h2><p><strong>ParNew 收集器</strong>其实就是Serial收集器的多线程版本，除了使用多线程外其余行为均和Serial收集器一模一样（参数控制、收集算法、Stop The World、对象分配规则、回收策略等）。</p>
+<p><strong>特点</strong>：多线程、ParNew收集器默认开启的收集线程数与CPU的数量相同，在CPU非常多的环境中，可以使用-XX:ParallelGCThreads参数来限制垃圾收集的线程数</p>
+<p><strong>应用场景</strong>：ParNew收集器是许多运行在Server模式下的虚拟机中首选的新生代收集器，因为它是除了Serial收集器外，唯一一个能与CMS收集器配合工作的</p>
+<p><img src="https://taicw-blog.oss-cn-beijing.aliyuncs.com/202001/4-1-02.png?x-oss-process=style/watermarking"></p>
+<h2 id="4-5-Parallel-Scavenge-收集器"><a href="#4-5-Parallel-Scavenge-收集器" class="headerlink" title="4.5 Parallel Scavenge 收集器"></a>4.5 Parallel Scavenge 收集器</h2><p><strong>Parallel Scavenge 收集器</strong>与吞吐量关系密切，故也称为<strong>吞吐量优先收集器</strong>，<strong>用于新生代</strong>垃圾回收，采用<strong>复制算法</strong>。</p>
+<p><strong>特点</strong>：并行的多线程收集器，与ParNew收集器类似，但是它的目标在于达到一个可控的吞吐量。还有一个值得关注的点是GC自适应调节策略，这也是与ParNew收集器最重要的一个区别</p>
+<p><strong>GC自适应调节策略</strong>：Parallel Scavenge收集器可设置 <code>-XX:+UseAdaptiveSizePolicy</code>参数，当开关打开时不需要手动指定新生代的大小（-Xmn）、Eden与Survivor区的比例（-XX:SurvivorRation）、晋升老年代的对象年龄（-XX:PretenureSizeThreshold）等，虚拟机会根据系统的运行状况收集性能监控信息，动态设置这些参数以提供最优的停顿时间和最高的吞吐量，这种调节方式称为GC的<strong>自适应调节策略</strong>。</p>
+<p>Parallel Scavenge提供了两个参数用于精确控制吞吐量</p>
+<ul>
+<li><strong>-XX:MaxGCPauseMillis</strong>： 控制最大垃圾收集停顿时间<ul>
+<li>参数值是一个大于0的毫秒数。这个值不一定设置的越小越好，因为系统为了到达这个值的目标可能会把新生代空间调小些，要回收的空间小了，那么单次垃圾回收停顿的时间就小了，但是垃圾回收的频率就会增加，吞吐量就会变低</li>
+</ul>
+</li>
+<li><strong>-XX:GCTimeRatio</strong>： 设置GC时间占总时间的比率<ul>
+<li>参数值是一个0-99的整数。含义是，如果参数值是19，那么GC时间占总用时间的比率就是 1/(1+19)=5%，而吞吐量就是95%。默认参数值是 99，即GC占时比率为1%，吞吐量为99%</li>
+</ul>
+</li>
+</ul>
+<h2 id="4-6-Parallel-Old-收集器"><a href="#4-6-Parallel-Old-收集器" class="headerlink" title="4.6 Parallel Old 收集器"></a>4.6 Parallel Old 收集器</h2><p>Parallel Old 收集器是Parallel Scavenge老年代版本，<strong>用于老年代</strong>垃圾回收，采用<strong>标记整理算法</strong>。</p>
+<p><strong>特点</strong>：Parallel Scavenge 收集器基本一致</p>
+<p><strong>应用场景</strong>：注重高吞吐量以及CPU资源敏感的场合，都可以优先考虑Parallel Scavenge+Parallel Old 收集器</p>
+<h2 id="4-7-CMS收集器"><a href="#4-7-CMS收集器" class="headerlink" title="4.7 CMS收集器"></a>4.7 CMS收集器</h2><p><strong>CMS(Concurrent Mark Sweep)收集器</strong>是一种以获取最短回收停顿时间为目标的收集器，也叫<strong>并发收集器</strong>，<strong>用于老年代</strong>垃圾回收，采用<strong>标记清除</strong>算法。</p>
+<p><strong>特点</strong>：并发收集、低停顿。</p>
+<p><strong>应用场景</strong>：适用于注重服务的响应速度，希望系统停顿时间最短，给用户带来更好的体验等场景下。如web程序、b/s服务。</p>
+<p><img src="https://taicw-blog.oss-cn-beijing.aliyuncs.com/202001/4-1-03.png?x-oss-process=style/watermarking"></p>
+<p><strong>CMS收集器的运行过程分为下列4步：</strong></p>
+<ol>
+<li><strong>初始标记</strong>：标记GC Roots能直接到的对象，速度很快但是<strong>存在STW问题</strong></li>
+<li><strong>并发标记</strong>：进行GC Roots Tracing 的过程，找出存活对象且用户线程可并发运行</li>
+<li><strong>重新标记</strong>：为了修正并发标记期间因用户程序继续运行而导致标记产生变动的那一部分对象的标记记录，这个阶段仍然<strong>存在STW问题</strong>，停顿时间一般会比初始标记长一些，但远比并发标记花费的时间短</li>
+<li><strong>并发清除</strong>：清理无用对象，与用户线程并发进行</li>
+</ol>
+<p>由于整个过程中耗时最长的<strong>并发标记和并发清除过程收集器线程都可以与用户线程一起工作</strong>，所以从总体上来说，<strong>CMS收集器的内存回收过程是与用户线程一起并发执行的</strong></p>
+<p>CMS收集器的缺点：</p>
+<ul>
+<li><strong>对CPU资源非常敏感</strong>。在并发阶段，它虽然不会导致用户线程停顿，但会因为占用了一部分线程（或者说CPU资源）而导致应用程序变慢，总吞吐量会降低。CMS默认启动回收线程数是 (CPU数+3)/4。</li>
+<li><strong>无法处理浮动垃圾</strong>。并发清除阶段，用户线程也在运行就可能产生新的垃圾(未做标记CMS无法清除)，这一部分垃圾就被称为“浮动垃圾”。也是由于该阶段用户线程还需要运行，不能像其他垃圾收集器那样等待老年代几乎被填满了再进行收集，需要预留有足够的内存空间给用户线程使用，如果预留空间不足就会<strong>出现”Concurrent Mode Failure”失败而导致一次Full GC</strong>(后备预案：临时启动Serial Old收集器进行垃圾回收)。可以通过参数<code>-XX:CMSInitiatingOccupancyFraction</code> 来调整老年代内存占多少百分比时触发CMS垃圾回收。</li>
+<li>因为采用<strong>标记-清除算法所以会存在空间碎片</strong>的问题，导致大对象无法分配空间，不得不提前触发一次Full GC</li>
+</ul>
+<h2 id="4-8-G1-收集器"><a href="#4-8-G1-收集器" class="headerlink" title="4.8 G1 收集器"></a>4.8 G1 收集器</h2><p><strong>G1 收集器</strong>是一款面向服务端应用的垃圾收集器，与其他垃圾回收器不同的是它的<strong>工作范围是整个java堆</strong>，它把整个Java堆<strong>划分为多个大小相等的独立区域(Region)**，虽然也保留了新生代、老年代的概念，但新生代和老年代不再是相互隔离的，他们都是一部分Region(不需要连续)的集合。垃圾回收算法整体上是</strong>标记-整理<strong>算法，两个区域(Region)之间是</strong>复制算法**</p>
+<p><strong>特点：</strong></p>
+<ul>
+<li><p><strong>并行与并发</strong>：G1能充分利用多CPU、多核环境下的硬件优势，使用多个CPU来缩短Stop-The-World停顿时间。部分收集器原本需要停顿Java线程来执行GC动作，G1收集器仍然可以通过并发的方式让Java程序继续运行。</p>
+</li>
+<li><p><strong>分代收集</strong>：G1能够独自管理整个Java堆，并且采用不同的方式去处理新创建的对象和已经存活了一段时间、熬过多次GC的旧对象以获取更好的收集效果。</p>
+</li>
+<li><p><strong>空间整合</strong>：G1运作期间不会产生空间碎片，收集后能提供规整的可用内存。</p>
+</li>
+<li><p><strong>可预测的停顿</strong>：G1除了追求低停顿外，还能建立可预测的停顿时间模型。能让使用者明确指定在一个长度为M毫秒的时间段内，消耗在垃圾收集上的时间不得超过N毫秒。</p>
+</li>
+</ul>
+<p><strong>G1为什么能建立可预测的停顿时间模型？</strong></p>
+<p>因为它有计划的避免在整个Java堆中进行全区域的垃圾收集。G1跟踪各个Region里面的垃圾堆积的大小，在后台维护一个优先列表，每次根据允许的收集时间，优先回收价值最大的Region。这样就保证了在有限的时间内可以获取尽可能高的收集效率。</p>
+<p><strong>G1收集器存在的问题：</strong></p>
+<p>Region不可能是孤立的，分配在Region中的对象可以与Java堆中的任意对象发生引用关系。在采用可达性分析算法来判断对象是否存活时，得扫描整个Java堆才能保证准确性。其他收集器也存在这种问题（G1更加突出而已）。会导致Minor GC效率下降。</p>
+<p><strong>G1收集器是如何解决上述问题的？</strong></p>
+<p>采用Remembered Set来避免整堆扫描。G1中每个Region都有一个与之对应的Remembered Set，虚拟机发现程序在对Reference类型进行写操作时，会产生一个Write Barrier暂时中断写操作，检查Reference引用对象是否处于多个Region中（即检查老年代中是否引用了新生代中的对象），如果是，便通过CardTable把相关引用信息记录到被引用对象所属的Region的Remembered Set中。当进行内存回收时，在GC根节点的枚举范围中加入Remembered Set即可保证不对全堆进行扫描也不会有遗漏。</p>
+<p><strong>如果不计算维护 Remembered Set 的操作，G1收集器大致可分为如下步骤：</strong></p>
+<ol>
+<li><strong>初始标记</strong>：仅标记GC Roots能直接到的对象，并且修改TAMS（Next Top at Mark Start）的值，让下一阶段用户程序并发运行时，能在正确可用的Region中创建新对象。（需要线程停顿，但耗时很短。）</li>
+<li><strong>并发标记</strong>：从GC Roots开始对堆中对象进行可达性分析，找出存活对象。（耗时较长，但可与用户程序并发执行）</li>
+<li><strong>最终标记</strong>：为了修正在并发标记期间因用户程序执行而导致标记产生变化的那一部分标记记录。且对象的变化记录在线程Remembered Set Logs里面，把Remembered Set Logs里面的数据合并到Remembered Set中。（需要线程停顿，但可并行执行。）</li>
+<li><strong>筛选回收</strong>：对各个Region的回收价值和成本进行排序，根据用户所期望的GC停顿时间来制定回收计划。（可并发执行）</li>
+</ol>
+<h1 id="4-9-GC相关参数"><a href="#4-9-GC相关参数" class="headerlink" title="4.9 GC相关参数"></a>4.9 GC相关参数</h1><p><strong>开启不同垃圾收集器参数</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>描述</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>UseSerialGC</td>
+<td>使用Serial + Serial Old 的收集器组合进行内存回收</td>
+<td>虚拟机运行在client模式下默认开启，其他模式默认关闭</td>
+</tr>
+<tr>
+<td>UseParNewGC</td>
+<td>使用ParNew+ Serial Old 的收集器组合进行内存回收</td>
+<td>默认关闭</td>
+</tr>
+<tr>
+<td>UseParallelGC</td>
+<td>使用Parallel Scavenge + Serial Old 的收集器组合进行内存回收</td>
+<td>虚拟机运行在server模式下默认开启，其他模式默认关闭</td>
+</tr>
+<tr>
+<td>UseParallelOldGC</td>
+<td>使用Parallel Scavenge + Parallel Old 的收集器组合进行内存回收</td>
+<td>默认关闭</td>
+</tr>
+<tr>
+<td>UseConcMarkSweepGC</td>
+<td>使用 ParNew + CMS + Serial Old 的收集器组合进行内存回收。其中Serial Old是当CMS收集出现”Concurrent Mode Failuer” 时，将作为备用收集器进行 FULL GC</td>
+<td>默认关闭</td>
+</tr>
+<tr>
+<td>UseG1GC</td>
+<td>使用G1收集器进行内存回收</td>
+<td>默认关闭，JDK 1.9之后版本中默认开启</td>
+</tr>
+</tbody></table>
+<p><strong>其他常用GC参数</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>描述</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SurvivorRatio</td>
+<td>新生代中 Eden区 与 Survivor区(其中一个)的比值。如果等于8，代表 Eden:Survivor=8:1</td>
+<td>8</td>
+</tr>
+<tr>
+<td>MaxTenuringThreshold</td>
+<td>晋升到老年代的对象年龄。每个对象经历过一次Minor GC后年龄就会加1，当达到这个值时就会晋升到老年代</td>
+<td>15</td>
+</tr>
+<tr>
+<td>PretenureSizeThreshold</td>
+<td>可以直接晋升老年代的对象大小。如果设置了这个参数值后，大小超过这个值的对象直接晋升到老年代，不需要等到年龄达到 MaxTenuringThreshold 值。</td>
+<td>无</td>
+</tr>
+<tr>
+<td>ScavengeBeforeFullGC</td>
+<td>在FULL GC 之前是否触发一次 Minor GC</td>
+<td>默认开启</td>
+</tr>
+<tr>
+<td>DisableExplicitGC</td>
+<td>忽略手动调用 <code>System.gc()</code> 触发的垃圾回收。即若开启，则代码中调用 <code>System.gc()</code> 不起作用</td>
+<td>默认关闭</td>
+</tr>
+<tr>
+<td>ParallelGCThreads</td>
+<td>设置并行GC进行垃圾回收的线程数。此参数对于CMS(并发收集器)也有效</td>
+<td>默认值随JVM所运行的平台而变化，一般与CPU数目相等</td>
+</tr>
+<tr>
+<td>ConcGCThreads</td>
+<td>设置并发GC进行垃圾回收的线程数</td>
+<td>默认值随JVM所运行的平台而变化，一般是ParallelGCThreads的四分之一</td>
+</tr>
+<tr>
+<td>UseAdaptiveSizePolicy</td>
+<td>动态调整 java 对中各个区域的大小及进入老年代的年龄。当开关打开时不需要手动指定 -Xmn、-XX:SurvivorRation、-XX:PretenureSizeThreshold等参数，虚拟机会根据系统的运行状况收集性能监控信息，动态设置这些参数以提供最优的停顿时间和最高的吞吐量，这种调节方式称为GC的<strong>自适应调节策略</strong></td>
+<td>默认开启</td>
+</tr>
+<tr>
+<td>GCTimeRatio</td>
+<td>设置GC时间占总时间的比率。如果参数值是99，那么GC时间占总用时间的比率就是 1/(1+99)=1%。该参数只对 Parallel Scavenge 收集器有效</td>
+<td>99</td>
+</tr>
+<tr>
+<td>MaxGCPauseMillis</td>
+<td>设置最大GC最大暂停时间的。这是一个软目标，JVM将尽最大努力实现它。该参数只对 Parallel Scavenge 收集器有效</td>
+<td>无</td>
+</tr>
+<tr>
+<td>CMSInitiatingOccupancyFraction</td>
+<td>设置 CMS 收集器在老年代空间被使用多少后触发垃圾收集，参数值在0~100之间。该参数只对 CMS 收集器有效</td>
+<td>默认值为 -1，即如果不设置参数则使用公式计算得来</td>
+</tr>
+<tr>
+<td>UseCMSCompactAtFullCollection</td>
+<td>设置CMS收集器在完成垃圾收集后是否要进行一次内存碎片整理(CMS采用的标记清除算法因此会产生碎片)。该参数只对 CMS 收集器有效</td>
+<td>默认开启</td>
+</tr>
+<tr>
+<td>CMSFullGCsBeforeCompaction</td>
+<td>在 UseCMSCompactAtFullCollection 开启的情况下，设置CMS进行多少次垃圾回收后再启动一次内存碎片整理。该参数只对 CMS 收集器有效</td>
+<td>0</td>
+</tr>
+<tr>
+<td>CMSScavengeBeforeRemark</td>
+<td>在CMS收集的重新标记阶段之前，是否进行一次Minor GC（可在一定程度上减少重新标记阶段对象的扫描）。该参数只对 CMS 收集器有效</td>
+<td>默认关闭</td>
+</tr>
+<tr>
+<td>G1HeapRegionSize</td>
+<td>设置G1收集器每个 Region 区域大小。该参数只对 G1收集器有效</td>
+<td>这个参数的默认值是根据堆大小确定的，一般是堆内存大小的1/2000。最小值是1Mb，最大值是32Mb</td>
+</tr>
+</tbody></table>
+<p>使用<strong>串行</strong>收集器常用参数组合：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-XX:+UseSerialGC ~ Serial + SerialOld  </span><br></pre></td></tr></table></figure>
+
+<p>使用<strong>吞吐量优先</strong>收集器常用参数组合：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-XX:+UseParallelGC ~ -XX:+UseParallelOldGC </span><br><span class="line">-XX:+UseAdaptiveSizePolicy</span><br><span class="line">-XX:GCTimeRatio&#x3D;ratio</span><br><span class="line">-XX:MaxGCPauseMillis&#x3D;ms</span><br><span class="line">-XX:ParallelGCThreads&#x3D;n</span><br></pre></td></tr></table></figure>
+
+<p>使用<strong>响应时间优先</strong>收集器常用参数组合：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-XX:+UseConcMarkSweepGC ~ -XX:+UseParNewGC ~ SerialOld</span><br><span class="line">-XX:ParallelGCThreads&#x3D;n ~ -XX:ConcGCThreads&#x3D;threads</span><br><span class="line">-XX:CMSInitiatingOccupancyFraction&#x3D;percent</span><br><span class="line">-XX:+CMSScavengeBeforeRemark</span><br></pre></td></tr></table></figure>
+
+<p>启用<strong>G1收集器</strong>参数组合：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-XX:+UseG1GC</span><br><span class="line">-XX:G1HeapRegionSize&#x3D;size</span><br><span class="line">-XX:MaxGCPauseMillis&#x3D;time</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="4-10-GC-日志分析"><a href="#4-10-GC-日志分析" class="headerlink" title="4.10 GC 日志分析"></a>4.10 GC 日志分析</h1><p><strong>打印GC日志的常用参数</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>描述</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-XX:+PrintGC</td>
+<td>打印GC日志。（与标准参数 -verbose:gc 作用一致）</td>
+<td>关闭</td>
+</tr>
+<tr>
+<td>-XX:+PrintGCDetails</td>
+<td>打印详细的GC日志，还会在退出前打印堆的详细信息</td>
+<td>关闭</td>
+</tr>
+<tr>
+<td>-XX:+PrintGCTimeStamps</td>
+<td>打印GC发生的时间。从虚拟机启动以来经历的秒数，如 100.667</td>
+<td>关闭</td>
+</tr>
+<tr>
+<td>-XX:+PrintGCDateStamps</td>
+<td>打印GC发生的时间。日期形式，如 2020-10-11T20:01:53.769+0800</td>
+<td>关闭</td>
+</tr>
+<tr>
+<td>-XX:+PrintGCApplicationConcurrentTime</td>
+<td>打印应用程序的执行时间</td>
+<td>关闭</td>
+</tr>
+<tr>
+<td>-XX:+PrintGCApplicationStoppedTime</td>
+<td>打印应用由于GC而产生的停顿时间</td>
+<td>关闭</td>
+</tr>
+<tr>
+<td>-XX:+PrintHeapAtGC</td>
+<td>每次GC前后打印堆信息</td>
+<td>关闭</td>
+</tr>
+<tr>
+<td>-Xloggc:&lt;filename&gt;</td>
+<td>将GC日志以文件形式输出。如：-Xloggc:../logs/gc.log</td>
+<td>无</td>
+</tr>
+</tbody></table>
+<p>每一种垃圾收集器的日志都有略微不同，但是格式上都基本都是相同的。以下面示例代码为例，查看GC日志</p>
+<p>示例代码：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> indi.taicw.jvm.gc;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.Random;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * -Xms20M -Xmx20M -Xmn10M -XX:+UseParallelGC -XX:+PrintGCDetails -XX:+PrintGCTimeStamps</span></span><br><span class="line"><span class="comment"> * 其中 -XX:+UseParallelGC 是JDK1.8默认就启用的，也可以省略不写</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GCDemo04</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        List&lt;String&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">100000</span>; i++) &#123;</span><br><span class="line">            String s = String.valueOf(<span class="keyword">new</span> Random().nextInt());</span><br><span class="line">            <span class="keyword">if</span> (i%<span class="number">2</span> == <span class="number">0</span>) &#123;</span><br><span class="line">                list.add(s);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        list = <span class="keyword">null</span>;</span><br><span class="line">        System.gc();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>输出结果：</p>
+<p><img src="E:\md\jvm\jvm2\4-11.png"></p>
+<ul>
+<li><strong>①</strong>：GC发生的时间，从虚拟机启动以来经历的秒数</li>
+<li><strong>②</strong>：格式：<code>GC类型 (GC产生原因)</code><ul>
+<li>GC类型：”GC” 表示 Minor GC，一般只清理新生代；”Full GC” 表示 Full GC ，一般清理整个java堆，包括元空间</li>
+<li>GC产生原因 ：”Allocation Failure” 分配失败、”System.gc()” 手动触发 等等原因</li>
+</ul>
+</li>
+<li><strong>③</strong>：<code>区域: 回收前该区域已使用空间大小-&gt;回收后该区域已使用空间大小(该区域总大小)</code><ul>
+<li>区域：同一区域不同的垃圾收集器表示的关键字可能不同，比如新生代关键字 当开启-XX:+UseParallelGC时为”PSYoungGen”，当开启-XX:+UseSerialGC时为”DefNew”。</li>
+<li>JDK 1.8 之后移除了永久代区域 “PSPermGen”，取而代之的是元空间区域”Metaspace”，元空间区域并不占用java内存而是占用本地内存</li>
+</ul>
+</li>
+<li><strong>④</strong>：<code>回收前整个java堆已使用空间大小-&gt;回收后整个java堆已使用空间大小(java总大小)</code></li>
+<li><strong>⑤</strong>：本次垃圾回收耗费时间</li>
+<li><strong>⑥</strong>：这里面的user、sys、和real与Linux的time命令所输出的时间含义一致，分别代表用户消耗的CPU时间，内存态消耗的CPU时间，和操作从开始到结束所经过的墙钟时间</li>
+<li><strong>⑦</strong>：堆信息。启用-XX:+PrintGCDetails参数，程序会在退出前打印当前堆信息，分别展示了新生代、老年代、元空间区域内存使用情况</li>
+</ul>
+<blockquote>
+<p>上面的例子中启动参数 -Xmn10M 设置了新生代总大小是 10M，但是GC日志中显示的新生代总大小是 9216K(即9M)，这是因为幸存区TO的空间是用来垃圾回收时中转对象的，其他时间都是空着的，所以计算新生代总大小时只包含 Eden区和幸存区FROM</p>
+</blockquote>
+<h1 id="4-11-GC调优"><a href="#4-11-GC调优" class="headerlink" title="4.11 GC调优"></a>4.11 GC调优</h1><p>没有放眼四海皆可用的调用方案，需要根据系统运行平台和运行环境进行调优。</p>
+<p><strong>调优领域</strong></p>
+<ul>
+<li>内存</li>
+<li>锁竞争</li>
+<li>CPU占用</li>
+<li>IO</li>
+</ul>
+<p><strong>确定目标</strong></p>
+<p>【低延迟】还是【高吞吐量】？选择合适的垃圾收集器</p>
+<p><strong>最快的GC是？？？</strong></p>
+<p>答案是不发生GC。首先排除减少因为自身编写的代码而引发的内存问题。查看Full GC前后的内存占用，考虑以下几个问题：</p>
+<ul>
+<li>数据是不是太多？<ul>
+<li>比如查询数据库大表，会把所有数据都加载到内存</li>
+</ul>
+</li>
+<li>数据表示是否太臃肿<ul>
+<li>对象图</li>
+<li>对象大小</li>
+</ul>
+</li>
+<li>是否存在内存泄漏<ul>
+<li>比如静态Map中不断添加元素，从不移除元素</li>
+</ul>
+</li>
+</ul>
+<p>​    </p>
+<p><strong>新生代调优</strong></p>
+<ul>
+<li>新生代特点<ul>
+<li>所有的new操作分配内存都是非常廉价的<ul>
+<li>TLAB(thread-local allocation buffer)</li>
+</ul>
+</li>
+<li>死亡对象回收零代价</li>
+<li>大部分对象用过即死（朝生夕死）</li>
+<li>Minor GC 所用时间远小于Full GC</li>
+</ul>
+</li>
+<li>新生代内存越大越好么？不是<ul>
+<li>新生代内存太小：频繁触发Minor GC，会STW，会使得吞吐量下降</li>
+<li>新生代内存太大：老年代内存占比有所降低，会更频繁地触发Full GC。而且触发Minor GC时，清理新生代所花费的时间会更长  </li>
+</ul>
+</li>
+<li>新生代能容纳所有【并发量 * (请求-响应)】的数据  </li>
+<li>幸存区大到能保留【当前活跃对象+需要晋升对象】 </li>
+<li>晋升阈值配置得当，让长时间存活对象尽快晋升</li>
+</ul>
+<p><strong>老年代调优</strong></p>
+<p>以 CMS 为例</p>
+<ul>
+<li>CMS 的老年代内存尽量大些<ul>
+<li>内存过小，并发清理阶段产生浮动垃圾可能导致并发失败而触发FULL GC</li>
+</ul>
+</li>
+<li>先尝试不做调优，如果没有 Full GC 说明老年代已经比较优化了，即使有 Full GC 也应先尝试调优新生代</li>
+<li>观察发生 Full GC 时老年代内存占用，将老年代内存预设调大 1/4 ~ 1/3<ul>
+<li>-XX:CMSInitiatingOccupancyFraction=percent  </li>
+</ul>
+</li>
+</ul>
+<p><strong>案例分析</strong></p>
+<ul>
+<li>案例1 Full GC 和 Minor GC频繁<ul>
+<li>可能是新生代内存紧张，导致年龄很小的对象提前进入了老年代，导致老年代内存也不足了</li>
+<li>解决：适当调整新生代内存大小，使存活很短的对象不要进入老年代</li>
+</ul>
+</li>
+<li>案例2 请求高峰期发生 Full GC，并且单次暂停时间特别长 （CMS）<ul>
+<li>可能是因为在CMS并发标记阶段用户线程新创建的对象比较多，导致重新标记阶段需要扫描的对象增多因此停顿时间增多；并发清理阶段产生的浮动垃圾比较多导致FULL GC</li>
+<li>解决：在重新标记之前进行一次 Minor GC，-XX:+CMSScavengeBeforeRemark</li>
+</ul>
+</li>
+<li>案例3 老年代充裕情况下，发生 Full GC （CMS jdk1.7）  <ul>
+<li>可能是永久代内存不足了，导致了FULL GC</li>
+<li>JDK 1.7 永久代也占用的是java堆内存，所以也会导致FULL GC；JDK 1.8 之后，移除了永久代取而代之的是元空间，使用的是本地内存，不会导致 FULL GC</li>
+</ul>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>jvm</category>
+      </categories>
+      <tags>
+        <tag>jvm</tag>
+        <tag>GC</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>JVM参数类型</title>
     <url>/20200501/jvmParamType/218e2c7235be.html</url>
     <content><![CDATA[<h1 id="1-参数分类"><a href="#1-参数分类" class="headerlink" title="1. 参数分类"></a>1. 参数分类</h1><p>jvm 参数可分为三类：</p>
